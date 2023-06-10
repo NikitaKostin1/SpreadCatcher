@@ -1,0 +1,7 @@
+# Some trash
+/__pycache__
+/venv
+
+# Developer files
+*.bat
+*.log
