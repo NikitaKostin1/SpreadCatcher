@@ -12,11 +12,16 @@ async def send_video(user_id: int|str, video: str|InputFile, caption: str=None, 
 	Use this method to send video files, Telegram clients support mp4 videos (other formats may be sent as Document).
 	"""
 	try:
-		msg = await bot.send_video(user_id, video=video, caption=caption, reply_markup=markup)
+		msg = await bot.send_video(
+			user_id, video=video, caption=caption, reply_markup=markup
+		)
 		return msg
 	except:
 		if caption:
-			msg = await bot.send_message(user_id, caption, reply_markup=markup)
+			msg = await bot.send_message(
+				user_id, caption, reply_markup=markup,
+				disable_web_page_preview=True
+			)
 			return msg
 
 
@@ -27,9 +32,14 @@ async def send_photo(user_id: int|str, photo: str|InputFile, caption: str=None, 
 	Use this method to send photo files
 	"""
 	try:
-		msg = await bot.send_photo(user_id, photo=photo, caption=caption, reply_markup=markup)
+		msg = await bot.send_photo(
+			user_id, photo=photo, caption=caption, reply_markup=markup
+		)
 		return msg
 	except:
 		if caption:
-			msg = await bot.send_message(user_id, caption, reply_markup=markup)
+			msg = await bot.send_message(
+				user_id, caption, reply_markup=markup,
+				disable_web_page_preview=True
+			)
 			return msg

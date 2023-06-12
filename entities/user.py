@@ -11,18 +11,17 @@ class User:
 	"""
 	user_id: int
 	username: str="None"
+	entry_date: datetime=None
+	is_bot_on: bool=False
 
-	language: str="RU"
-	first_visit: Union[str, datetime]=None
-	is_admin: bool=False
+	is_subscription_active: bool=False
+	subscription_id: int=0
+	subscription_begin_date: datetime=None
 
-	first_name: str=None
-	full_name: str=None
-	email: str=None
-	phone: str=None
+	is_test_active: bool=False
+	test_begin_date: datetime=None
 
-
-	# def __post_init__(self):
-	# 	if isinstance(username, None):
-	# 		self.username = "None"
-
+	# full_name: str=None
+	# phone: str=None
+	# email: str=None
+	# register_date: datetime=None
