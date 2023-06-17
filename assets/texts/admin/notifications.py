@@ -1,8 +1,8 @@
-new_user_greeting = """ \
+new_user = """ \
 <code>{user_id}</code> | @{username} зашёл в бота.
 """
 
-existing_user_greeting = """ \
+existing_user = """ \
 <code>{user_id}</code> | @{username} перезашёл в бота.
 """
 

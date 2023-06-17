@@ -6,7 +6,7 @@ import config
 
 storage = MemoryStorage()
 
-# Bot initialization
+# Initialize the Telegram Bot
 bot = Bot(token=config.TOKEN, parse_mode="html")
 dp = Dispatcher(bot, storage=storage)
 

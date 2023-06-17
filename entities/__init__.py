@@ -3,3 +3,9 @@ from .custom_message import (
 )
 from .user import User
 from .subscriptions import Subscriptions
+from .parametres import (
+	Parametres, Parameter,
+	StandardParametres,
+	TesterParametresChecker
+)
+from .input_error import InputError

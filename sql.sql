@@ -29,3 +29,17 @@ CREATE TABLE users_parametres (
 	fiat 		VARCHAR(5) 	NOT NULL,
 	trading_type VARCHAR(8)	NOT NULL,
 );
+
+-- Import data from supported_banks.csv
+/*
+COPY supported_banks(fiat, bank, supported_markets, fiat_symbol)
+FROM '%PATH%\supported_banks.csv'
+DELIMITER ','
+CSV HEADER;
+*/
+CREATE TABLE supported_banks (
+	fiat VARCHAR(50 NOT NULL,
+	bank VARCHAR(30) NOT NULL,
+	supported_markets TEXT NOT NULL,
+	fiat_symbol VARCHAR(7) NOT NULL
+);

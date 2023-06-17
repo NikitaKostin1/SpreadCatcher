@@ -7,7 +7,20 @@ from datetime import datetime
 @dataclass
 class User:
 	"""
-	Dataclass that containes necessary data about user
+	Represents a user with necessary data.
+
+	Attributes:
+		user_id: The unique identifier of the user.
+		username: The username of the user.
+		entry_date: The entry date of the user.
+		is_bot_on: Indicates whether the user's bot is active.
+
+		is_subscription_active: Indicates whether the user has an active subscription.
+		subscription_id: The ID of the user's subscription.
+		subscription_begin_date: The start date of the user's subscription.
+
+		is_test_active: Indicates whether the user has an active test.
+		test_begin_date: The start date of the user's test.
 	"""
 	user_id: int
 	username: str="None"
@@ -20,8 +33,3 @@ class User:
 
 	is_test_active: bool=False
 	test_begin_date: datetime=None
-
-	# full_name: str=None
-	# phone: str=None
-	# email: str=None
-	# register_date: datetime=None

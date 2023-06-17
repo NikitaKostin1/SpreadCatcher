@@ -17,7 +17,10 @@ logger.add(
 @logger.catch
 async def get_conn() -> asyncpg.connection.Connection:
 	"""
-	Establish a connection to a database.
+	Establish a connection to the database.
+
+	Returns:
+		asyncpg.connection.Connection: A connection object to interact with the database.
 	"""
 	DATABASE_URL = os.getenv("DATABASE_URL")
 	connection = await asyncpg.connect(dsn=DATABASE_URL, ssl="require")

@@ -31,15 +31,7 @@ async def update_user(user: User) -> bool:
 	"""
 	Rewrite row in user table
 	"""
-	# TODO: check NOT NULL columns
 	try:
-		# for param in astuple(user):
-		# 	if param is None:
-		# 		logger.error(""" \
-		# 			All parametres in the User instance must be provided!
-		# 		""")
-		# 		return False
-
 		connection = await get_conn()
 		success = await db.update_user(connection, user)
 

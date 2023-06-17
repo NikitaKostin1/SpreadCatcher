@@ -1,7 +1,7 @@
 from aiogram.types.input_media import InputMedia
 from aiogram.types.input_file import InputFile
 from aiogram import types
-from typing import Dict
+from typing import Union, Dict
 
 from create_bot import bot
 from config import logger
@@ -18,7 +18,7 @@ class MessageHandler:
 
 
 	@logger.catch
-	async def acquire(self, message: types.Message) -> None:
+	async def acquire(self, message: types.Message, text: str=None,reply_markup: types.InlineKeyboardMarkup=None) -> None:
 		"""
 		Rewrite message in storage 
 		or set new message.
@@ -30,7 +30,7 @@ class MessageHandler:
 		USER_ID = message["chat"]["id"]
 
 		if USER_ID in self.storage:
-			await self.edit(USER_ID)
+			await self.edit(USER_ID, text, reply_markup=reply_markup)
 
 		self.storage[USER_ID] = message
 
@@ -71,15 +71,15 @@ class MessageHandler:
 
 
 	@logger.catch
-	async def edit(self, USER_ID: int, text: str=None, markup: types.InlineKeyboardMarkup=None) -> bool:
+	async def edit(self, USER_ID: int, text: str=None, reply_markup: types.InlineKeyboardMarkup=None) -> Union[types.Message, None]:
 		"""
 		Edit message from storage
 		Return bool value of operation
 		"""
 		if not USER_ID in self.storage:
-			return False
+			return None
 		if not self.storage[USER_ID]:
-			return False			
+			return None			
 
 		message = self.storage[USER_ID]	
 		message_id = message["message_id"]
@@ -91,26 +91,26 @@ class MessageHandler:
 				text = message["caption"]
 
 		try:
-			await bot.edit_message_text(
+			msg = await bot.edit_message_text(
 				chat_id=USER_ID,
 				message_id=message_id,
 				text=text,
-				reply_markup=markup,
+				reply_markup=reply_markup,
 				disable_web_page_preview=True
 			)
-			return True
+			return msg
 		except:
-			return False
+			return None
 
 
 	@logger.catch
-	async def delete(self, USER_ID: int) -> None:
+	async def delete(self, USER_ID: int) -> bool:
 		"""
 		Deletes message from chat
 		(Remains in storage)
 		"""
 		if not USER_ID in self.storage:
-			return
+			return False
 		if not self.storage[USER_ID]:
 			return False	
 
@@ -118,8 +118,9 @@ class MessageHandler:
 
 		try:
 			await message.delete()
+			return True
 		except:
-			pass
+			return False
 		
 
 
@@ -149,6 +150,15 @@ class MessageHandler:
 		except:
 			return False
 
+
+	@logger.catch
+	async def get_message(self, USER_ID: int) -> types.Message:
+		if not USER_ID in self.storage:
+			return None
+		if not self.storage[USER_ID]:
+			return None
+
+		return self.storage[USER_ID]
 
 
 

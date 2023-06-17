@@ -8,3 +8,4 @@ venv/
 # Developer files
 *.bat
 *.log
+test*

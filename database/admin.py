@@ -8,7 +8,7 @@ from config import logger
 @logger.catch
 async def get_admins(connection: Connection) -> list:
 	"""
-	Return list of admins id
+	Retrieves a list of admin IDs from the database.
 	"""
 	admins = []
 	try:
@@ -30,7 +30,7 @@ async def get_admins(connection: Connection) -> list:
 @logger.catch
 async def update_user(connection: Connection, user: User) -> bool:
 	"""
-	Rewrite row in user table
+	Updates a user's row in the user table.
 	"""
 	try:
 		await connection.execute(f"""
