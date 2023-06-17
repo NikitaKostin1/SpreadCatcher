@@ -39,3 +39,18 @@ async def update_user(user: User) -> bool:
 	except Exception as e:
 		logger.error(f"{user.user_id}: {e}")
 		return False
+
+
+@logger.catch
+async def reset_access(user_id: int) -> bool:
+	"""
+	Rewrite row in user table
+	"""
+	try:
+		connection = await get_conn()
+		success = await db.reset_access(connection, user_id)
+
+		return success
+	except Exception as e:
+		logger.error(f"{user_id}: {e}")
+		return False

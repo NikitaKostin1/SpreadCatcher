@@ -20,6 +20,7 @@ from keyboards.user import (
 )
 
 
+
 @logger.catch
 async def start(message: types.Message, state: FSMContext):
 	"""
@@ -82,7 +83,7 @@ async def start(message: types.Message, state: FSMContext):
 @logger.catch
 async def parametres(message: types.Message, state: FSMContext):
 	"""
-	Handles the 'parametres' command. Displays the user's parameters.
+	Handles the 'parametres' reply keyboard button. Displays the user's parameters.
 	"""
 	await state.finish()
 	user_id = message["from"]["id"]
@@ -101,7 +102,7 @@ async def parametres(message: types.Message, state: FSMContext):
 @logger.catch
 async def channel(message: types.Message, state: FSMContext):
 	"""
-	Handles the 'channel' command. Sends the channel link to the user.
+	Handles the 'channel' reply keyboard button. Sends the channel link to the user.
 	"""
 	await state.finish()
 	user_id = message["from"]["id"]
@@ -117,7 +118,7 @@ async def channel(message: types.Message, state: FSMContext):
 @logger.catch
 async def support(message: types.Message, state: FSMContext):
 	"""
-	Handles the 'support' command. Sends the support link to the user.
+	Handles the 'support' reply keyboard button. Sends the support link to the user.
 	"""
 	await state.finish()
 	user_id = message["from"]["id"]
@@ -133,7 +134,7 @@ async def support(message: types.Message, state: FSMContext):
 @logger.catch
 async def rates(message: types.Message, state: FSMContext):
 	"""
-	Handles the 'rates' command. Displays the subscription rates to the user.
+	Handles the 'rates' reply keyboard button. Displays the subscription rates to the user.
 	"""
 	await state.finish()
 	user_id = message["from"]["id"]
@@ -146,3 +147,35 @@ async def rates(message: types.Message, state: FSMContext):
 	await MainMessage.acquire(msg)
 
 
+@logger.catch
+async def profile(message: types.Message, state: FSMContext):
+	"""
+	Handles the 'rates' reply keyboard button.
+	Displays the profile data to the user.
+	"""
+	await state.finish()
+	user_id = message["from"]["id"]
+
+	expiration_date = await manager.subscription_expiration_date(user_id)
+	if not expiration_date:
+		await message.answer(txt.error)
+		return
+
+	if isinstance(expiration_date, datetime): 
+		date_string = expiration_date.strftime("%d/%m/%Y")
+		days_left = str(
+			util.date_to_int(expiration_date) - \
+			util.date_to_int(datetime.now())
+		)
+	else:
+		date_string = expiration_date
+		days_left = date_string
+
+	msg = await message.answer(
+		txt.profile.format(
+			expiration_date=date_string,
+			days_left=days_left
+		),
+		disable_web_page_preview=True
+	)
+	await MainMessage.acquire(msg)

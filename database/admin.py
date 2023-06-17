@@ -67,3 +67,30 @@ async def update_user(connection: Connection, user: User) -> bool:
 	except Exception as e:
 		logger.error(f"{user.user_id}: {e}")
 		return False
+
+
+@logger.catch
+async def reset_access(connection: Connection, user_id: int) -> bool:
+	"""
+	Updates a user's row in the user table.
+	"""
+	try:
+		await connection.execute(f"""
+			BEGIN TRANSACTION ISOLATION LEVEL repeatable read;
+
+			UPDATE users 
+			SET 
+				is_subscription_active = false,
+				subscription_id = NULL,
+				subscription_begin_date = NULL,
+				is_test_active = False,
+				test_begin_date = NULL
+			WHERE user_id = {user_id};
+
+			COMMIT;
+		""")
+
+		return True
+	except Exception as e:
+		logger.error(f"{user_id}: {e}")
+		return False

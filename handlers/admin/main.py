@@ -11,4 +11,5 @@ def register_commands_handlers(dp: Dispatcher):
 	"""
 	Register all admins commands
 	"""
-	dp.register_message_handler(client.give_access, lambda message: message.text.split()[0] == "Доступ7358", state="*", chat_type=types.ChatType.PRIVATE)
+	dp.register_message_handler(client.give_access, lambda message: message.text.split()[0] == "Доступ1899", state="*", chat_type=types.ChatType.PRIVATE)
+	dp.register_message_handler(client.reset_access, lambda message: message.text.split()[0] == "Обнулить105", state="*", chat_type=types.ChatType.PRIVATE)

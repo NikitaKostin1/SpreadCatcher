@@ -45,3 +45,25 @@ _______________________________
 """
 
 
+profile = """ \
+👤 <b>ВАШ ПРОФИЛЬ SCBOT</b>: 
+
+<b>Тариф:</b> <i>PREMIUM</i>
+<b>Дата окончания подписки:</b> {expiration_date}
+<b>Осталось дней:</b> {days_left}
+
+_______________________________________
+
+<b>МАТЕРИАЛЫ ДЛЯ РАБОТЫ:</b>
+
+📔 <b><a href="https://telegra.ph/Obuchenie-P2P-07-18">MANUAL по Р2Р</a></b>
+📚 <b><a href="https://telegra.ph/GUIDE-po-SCBot-09-01">GUIDE по SCBot</a></b>
+🔂 <b><a href="https://telegra.ph/Paki-iz-150-mezhdunarodnyh-svyazok-09-04">150 МЕЖДУНАРОДНЫХ СВЯЗОК</a></b>
+
+<b>ПАНЕЛЬ ИНСТРУМЕНТОВ:</b>
+
+📰 <b><a href="https://t.me/SpreadCatchers">КАНАЛ</a></b>
+🤝 <b><a href="https://telegra.ph/PARTNERSKAYA-PROGRAMMA-09-01">ПАРТНЕРСКАЯ ПРОГРАММА</a></b>
+🔊 <b><a href="https://t.me/SCBot_reviews">ОТЗЫВЫ</a></b>
+👁‍🗨 <b><a href="https://t.me/SC_Bot_Support">СВЯЗЬ</a></b>
+"""

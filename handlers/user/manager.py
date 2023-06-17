@@ -1,7 +1,7 @@
 from config import logger, get_conn
 
 from datetime import datetime, timedelta
-from typing import Tuple
+from typing import Union, Tuple
 
 from entities import (
 	User, Subscriptions,
@@ -148,7 +148,6 @@ async def update_user_parameter(user_id: int, param: Parameter) -> bool:
 		return False
 
 
-
 @logger.catch
 async def is_subscription_active(user_id: int) -> bool:
 	"""
@@ -165,13 +164,43 @@ async def is_subscription_active(user_id: int) -> bool:
 
 
 @logger.catch
+async def subscription_expiration_date(user_id: int) -> Union[datetime, str, None]:
+	"""
+	Return datetime obj when subscruption expires.
+	In Unlimited subscription case return `∞` symbol
+	Otherwise return None
+	"""
+	try:
+		user = await get_user(user_id)
+		if not user:
+			return None
+
+		subscription_id = user.subscription_id
+		if not subscription_id:
+			return None
+
+		subscription = Subscriptions.by_id(subscription_id)
+		if subscription is Subscriptions.unlimited:
+			return "∞"
+
+		subscription_term = subscription.term
+		subscription_begin_date = user.subscription_begin_date
+
+		expiration_date = subscription_begin_date + subscription_term
+
+		return expiration_date
+	except Exception as e:
+		logger.error(f"{user}: {e}")
+		return None
+
+
+@logger.catch
 async def is_tester(user_id: int) -> bool:
 	"""
  	Check if the user is a tester.
  	"""
 	try:
-		connection = await get_conn()
-		user = await db.get_user(connection, user_id)
+		user = await db.get_user(user_id)
 
 		return user.is_test_active
 	except Exception as e:

@@ -24,6 +24,7 @@ def register_commands_handlers(dp: Dispatcher):
 	dp.register_message_handler(client.channel, lambda message: message.text == "🖊 Канал", state="*", chat_type=types.ChatType.PRIVATE)
 	dp.register_message_handler(client.support, lambda message: message.text == "👨‍💻 Поддержка", state="*", chat_type=types.ChatType.PRIVATE)
 	dp.register_message_handler(client.rates, lambda message: message.text == "🟢 АКТИВИРОВАТЬ PREMIUM 🟢", state="*", chat_type=types.ChatType.PRIVATE)
+	dp.register_message_handler(client.profile, lambda message: message.text == "👤 Профиль", state="*", chat_type=types.ChatType.PRIVATE)
 
 	dp.register_message_handler(client.parametres, lambda message: message.text == "⚙️ Настройки", state="*", chat_type=types.ChatType.PRIVATE)
 

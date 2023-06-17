@@ -3,6 +3,7 @@ from aiogram.types import (
 	Message
 )
 from aiogram.types.input_file import InputFile
+from datetime import datetime
 
 from config import logger
 from create_bot import bot
@@ -13,12 +14,22 @@ from keyboards.user import (
 )
 
 
+
+def date_to_int(date: datetime) -> int:
+	year, month, day = date.year, date.month, date.day
+	return ((year-1)*365 + (year-1)//4 - (year-1)//100 + (year-1)//400
+			+ [0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334][month - 1]
+			+ day
+			+ int(((year%4==0 and year%100!=0) or year%400==0) and month > 2))
+
+
 @logger.catch
 async def send_video( \
 	user_id: int|str, video: str|InputFile, \
 	caption: str=None, markup: InlineKeyboardMarkup=None) -> Message:
 	"""
-	Use this method to send video files, Telegram clients support mp4 videos (other formats may be sent as Document).
+	Use this method to send video files, Telegram clients support mp4 videos 
+	(other formats may be sent as Document).
 	"""
 	try:
 		msg = await bot.send_video(

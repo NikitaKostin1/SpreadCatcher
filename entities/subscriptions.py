@@ -55,7 +55,7 @@ class OneMonth(Subscription):
 	Inherits from the base `Subscription` class.
 	"""
 	subscription_id: int = 1
-	term: Union[timedelta, None] = timedelta(weeks=4)
+	term: Union[timedelta, None] = timedelta(days=30)
 
 	title: str = "1 месяц"
 	description: str = ""  # TODO: write and import description
@@ -73,7 +73,7 @@ class ThreeMonths(Subscription):
 	Inherits from the base `Subscription` class.
 	"""
 	subscription_id: int = 2
-	term: Union[timedelta, None] = timedelta(weeks=12)
+	term: Union[timedelta, None] = timedelta(days=90)
 
 	title: str = "3 месяца"
 	description: str = ""  # TODO: write and import description
