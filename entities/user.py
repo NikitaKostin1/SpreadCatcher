@@ -23,13 +23,13 @@ class User:
 		test_begin_date: The start date of the user's test.
 	"""
 	user_id: int
-	username: str="None"
-	entry_date: datetime=None
-	is_bot_on: bool=False
+	username: str = "None"
+	entry_date: datetime = None
+	is_bot_on: bool = False
 
-	is_subscription_active: bool=False
-	subscription_id: int=0
-	subscription_begin_date: datetime=None
+	is_subscription_active: bool = False
+	subscription_id: Union[int, None] = None
+	subscription_begin_date: Union[datetime, None] = None
 
-	is_test_active: bool=False
-	test_begin_date: datetime=None
+	is_test_active: bool = False
+	test_begin_date: Union[datetime, None] = None

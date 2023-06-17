@@ -154,8 +154,7 @@ async def is_subscription_active(user_id: int) -> bool:
 	Check if the user's subscription is active.
 	"""
 	try:
-		connection = await get_conn()
-		user = await db.get_user(connection, user_id)
+		user = await get_user(user_id)
 
 		return user.is_subscription_active
 	except Exception as e:
@@ -200,7 +199,7 @@ async def is_tester(user_id: int) -> bool:
  	Check if the user is a tester.
  	"""
 	try:
-		user = await db.get_user(user_id)
+		user = await get_user(user_id)
 
 		return user.is_test_active
 	except Exception as e:
@@ -215,15 +214,13 @@ async def is_tester_expired(user_id: int) -> bool:
 	"""
 	current_time = datetime.now()
 	try:
-		connection = await get_conn()
-		user = await db.get_user(connection, user_id)
+		user = await get_user(user_id)
 
 		if user.test_begin_date is None:
 			return False
 
-		return Subscriptions.tester.term + user.test_begin_date > current_time
+		return user.test_begin_date + Subscriptions.tester.term < current_time
 	except Exception as e:
 		logger.error(f"{user_id}: {e}")
 		return False
-
 

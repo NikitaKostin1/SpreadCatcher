@@ -1,5 +1,6 @@
-from datetime import datetime
+from aiogram.utils.exceptions import BotBlocked
 from aiogram import types
+from datetime import datetime
 import asyncio
 
 from create_bot import bot, dp
@@ -22,6 +23,9 @@ from keyboards.user import (
 
 @logger.catch
 async def give_access(message: types.Message):
+	"""
+	Function to give access to a subscription for a user.
+	"""
 	try:
 		if len(message["text"].split()) == 2:
 			# Access requested for caller
@@ -101,29 +105,38 @@ async def give_access(message: types.Message):
 		await message.answer("Ошибка!")
 		return
 
-	
-	await message.answer(
-		txt.access_given.format(
-			username=user.username,
-			user_id=user_id,
-			title=subscription.title
+		
+	try:	
+		await message.answer(
+			txt.access_given.format(
+				username=user.username,
+				user_id=user_id,
+				title=subscription.title
+			)
 		)
-	)
-	await bot.send_message(
-		381906725, 
-		txt.access_given.format(
-			username=user.username,
-			user_id=user_id,
-			title=subscription.title
+		await bot.send_message(
+			381906725, 
+			txt.access_given.format(
+				username=user.username,
+				user_id=user_id,
+				title=subscription.title
+			)
 		)
-	)
-	
-	await bot.send_message(user_id, text, reply_markup=markup)
+	except BotBlocked:
+		pass
+
+	try:
+		await bot.send_message(user_id, text, reply_markup=markup)
+	except BotBlocked:
+		pass
 
 
 
 @logger.catch
 async def reset_access(message: types.Message):
+	"""
+	Function to reset the access for a user.
+	"""
 	try:
 		if len(message["text"].split()) == 1:
 			# Access reset requested for caller

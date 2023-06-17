@@ -7,7 +7,8 @@ from entities import (
 	User, StandardParametres,
 	Parametres, Parameter
 )
-
+# TODO: rewrite for Connection.fetchval method
+# TODO: Read about Connection.prepare coroutine
 
 
 @logger.catch
@@ -84,7 +85,15 @@ async def get_user_parametres(connection: Connection, user_id: int) -> Parametre
 @logger.catch
 async def get_parameter(connection: Connection, user_id: int, ParameterType: Parameter) -> Parameter:
 	"""
+	Retrieves a specific parameter value for a user from the database.
 
+	Args:
+		connection (Connection): The database connection.
+		user_id (int): The ID of the user.
+		ParameterType (Parameter): The type of parameter to retrieve.
+
+	Returns:
+		Parameter: The value of the parameter for the user, or None if it doesn't exist.
 	"""
 	try:
 		record = await connection.fetchrow(f"""
@@ -190,3 +199,4 @@ async def update_user_parameter(connection: Connection, user_id: int, column: st
 	except Exception as e:
 		logger.error(f"{user_id}: {e}")
 		return False
+

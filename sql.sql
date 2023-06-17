@@ -5,16 +5,11 @@ CREATE TABLE users (
 	is_bot_on				BOOLEAN		NOT NULL,
 
 	is_subscription_active 	BOOLEAN		NOT NULL,
-	subscription_id			SMALLINT,  -- NULL - None, 0 - tester, > 0 - trader
+	subscription_id			SMALLINT,
 	subscription_begin_date TIMESTAMP,
 
 	is_test_active 			BOOLEAN		NOT NULL,
 	test_begin_date 		TIMESTAMP
-
-	-- phone					VARCHAR(25),
-	-- full_name 				VARCHAR(50),
-	-- email					VARCHAR(50),
-	-- register_date 			TIMESTAMP,
 );
 
 CREATE TABLE users_parametres (
@@ -38,8 +33,8 @@ DELIMITER ','
 CSV HEADER;
 */
 CREATE TABLE supported_banks (
-	fiat VARCHAR(50 NOT NULL,
-	bank VARCHAR(30) NOT NULL,
-	supported_markets TEXT NOT NULL,
-	fiat_symbol VARCHAR(7) NOT NULL
+	fiat 				VARCHAR(50 	NOT NULL,
+	bank 				VARCHAR(30) NOT NULL,
+	supported_markets 	TEXT 		NOT NULL,
+	fiat_symbol 		VARCHAR(7) 	NOT NULL
 );

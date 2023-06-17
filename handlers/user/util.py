@@ -2,8 +2,10 @@ from aiogram.types import (
 	InlineKeyboardMarkup, ReplyKeyboardMarkup,
 	Message
 )
+from aiogram.utils.exceptions import BotBlocked
 from aiogram.types.input_file import InputFile
-from datetime import datetime
+from datetime import datetime, timedelta
+import asyncio
 
 from config import logger
 from create_bot import bot
@@ -79,3 +81,4 @@ async def determine_reply_markup(user_id: int) -> ReplyKeyboardMarkup:
 		return rkb.tester_expired
 
 	return rkb.new_user
+
