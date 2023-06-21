@@ -31,7 +31,6 @@ class MessageHandler:
 
 		if USER_ID in self.storage:
 			await self.edit(USER_ID, text, reply_markup=reply_markup)
-			await AdditionalMessage.delete(USER_ID)
 
 		self.storage[USER_ID] = message
 

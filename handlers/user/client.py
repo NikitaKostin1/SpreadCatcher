@@ -87,6 +87,7 @@ async def parametres(message: types.Message, state: FSMContext):
 	"""
 	await state.finish()
 	user_id = message["from"]["id"]
+	await AdditionalMessage.delete(user_id)
 
 	text = await params_util.parametres_text(user_id)
 
@@ -106,6 +107,7 @@ async def channel(message: types.Message, state: FSMContext):
 	"""
 	await state.finish()
 	user_id = message["from"]["id"]
+	await AdditionalMessage.delete(user_id)
 
 	msg = await util.send_photo(
 		user_id,
@@ -122,6 +124,7 @@ async def support(message: types.Message, state: FSMContext):
 	"""
 	await state.finish()
 	user_id = message["from"]["id"]
+	await AdditionalMessage.delete(user_id)
 
 	msg = await util.send_photo(
 		user_id, 
@@ -138,6 +141,7 @@ async def rates(message: types.Message, state: FSMContext):
 	"""
 	await state.finish()
 	user_id = message["from"]["id"]
+	await AdditionalMessage.delete(user_id)
 
 	msg = await message.answer(
 		txt.rates,
