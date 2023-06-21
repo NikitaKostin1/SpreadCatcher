@@ -37,7 +37,7 @@ class Tester(Subscription):
 	Represents a tester subscription with restrictions and limited activation.
 	"""
 	subscription_id: int = 0
-	term: Union[timedelta, None] = timedelta(seconds=10)  # hours=1
+	term: Union[timedelta, None] = timedelta(hours=1)
 
 	title: str = "Тестер"
 	description: str = ""  # TODO: write and import description
