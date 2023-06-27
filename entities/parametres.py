@@ -62,8 +62,7 @@ class Markets(Parameter):
 	value: List[str]
 	title: str = "markets"
 	available_values: List[str] = field(default_factory=lambda: [
-		"Binance", "Huobi", "Bybit",
-		"OKX", "LocalBitcoin"
+		"Binance", "Huobi", "Bybit", "OKX"
 	])
 
 @dataclass

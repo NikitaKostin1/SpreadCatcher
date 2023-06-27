@@ -224,3 +224,87 @@ async def is_tester_expired(user_id: int) -> bool:
 		logger.error(f"{user_id}: {e}")
 		return False
 
+
+@logger.catch
+async def is_bot_on(user_id: int) -> bool:
+	"""
+	Checks if the bot is enabled for a user.
+	Returns True if the bot is enabled, False otherwise.
+	"""
+	try:
+		connection = await get_conn()
+		is_bot_on = await db.is_bot_on(connection, user_id)
+
+		return is_bot_on
+	except Exception as e:
+		logger.error(f"{user_id}: {e}")
+		return False
+
+
+@logger.catch
+async def enable_bot(user_id: int) -> bool:
+	"""
+	Enables the bot for a user.
+	Returns True if the bot is successfully enabled, False otherwise.
+	"""
+	try:
+		connection = await get_conn()
+		enabled = await db.enable_bot(connection, user_id)
+
+		return enabled
+	except Exception as e:
+		logger.error(f"{user_id}: {e}")
+		return False
+
+
+@logger.catch
+async def disable_bot(user_id: int) -> bool:
+	"""
+	Disables the bot for a user.
+	Returns True if the bot is successfully disabled, False otherwise.
+	"""
+	try:
+		connection = await get_conn()
+		disabled = await db.disable_bot(connection, user_id)
+
+		return disabled
+	except Exception as e:
+		logger.error(f"{user_id}: {e}")
+		return False
+
+
+@logger.catch
+async def switch_bot_state(user_id: int) -> bool:
+	"""
+	Switches the state of the bot for a user.
+	Returns True if the bot state is successfully switched, False otherwise.
+	"""
+	try:
+		_is_bot_on = await is_bot_on(user_id)
+
+		if _is_bot_on:
+			switched = await disable_bot(user_id)
+		else:
+			switched = await enable_bot(user_id)
+
+		return switched
+	except Exception as e:
+		logger.error(f"{user_id}: {e}")
+		return False
+
+
+@logger.catch
+async def get_active_users() -> Tuple[User]:
+	"""
+	Retrieves a tuple of users where the bot is enabled.
+	Returns:
+		Tuple[User]: A tuple of User objects representing the active users.
+	"""
+	try:
+		connection = await get_conn()
+		active_users = await db.get_active_users(connection)
+
+		return active_users
+	except Exception as e:
+		logger.error(e)
+		return tuple()

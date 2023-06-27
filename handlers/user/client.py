@@ -99,6 +99,31 @@ async def parametres(message: types.Message, state: FSMContext):
 	await MainMessage.acquire(msg)
 
 
+@logger.catch
+async def switch_bot_state(message: types.Message, state: FSMContext):
+	"""
+	Switches the state of the bot for a user.
+	"""
+	await state.finish()
+	user_id = message["from"]["id"]
+	await AdditionalMessage.delete(user_id)
+
+	is_bot_on = await manager.is_bot_on(user_id)
+	switched = await manager.switch_bot_state(user_id)
+
+	if not switched:
+		await message.answer(txt.error)
+		return
+
+	if is_bot_on:
+		await message.answer(txt.bot_disabled)
+		msg = await message.answer(txt.bot_disabling_info)
+	else:
+		await message.answer(txt.bot_enabled)
+		msg = await message.answer(txt.bot_enabling_info)
+
+	await MainMessage.acquire(msg)
+
 
 @logger.catch
 async def channel(message: types.Message, state: FSMContext):

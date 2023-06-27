@@ -6,6 +6,7 @@ from config import logger
 from handlers.user import main as users_registrator
 from handlers.admin import main as admins_registrator
 from timers import main as timers_registrator
+from signals import main as signals_server_starter
 
 
 # Register command handlers
@@ -14,6 +15,9 @@ admins_registrator.register_commands_handlers(dp)
 
 # Start all timers
 timers_registrator.register_timers()
+
+# Start signals server thread
+signals_server_starter.start_server()
 
 
 async def on_startup(_):

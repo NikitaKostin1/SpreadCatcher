@@ -27,6 +27,7 @@ def register_commands_handlers(dp: Dispatcher):
 	dp.register_message_handler(client.profile, lambda message: message.text == "👤 Профиль", state="*", chat_type=types.ChatType.PRIVATE)
 
 	dp.register_message_handler(client.parametres, lambda message: message.text == "⚙️ Настройки", state="*", chat_type=types.ChatType.PRIVATE)
+	dp.register_message_handler(client.switch_bot_state, lambda message: message.text == "🔔 Вкл/Выкл", state="*", chat_type=types.ChatType.PRIVATE)
 
 	# PARAMETRES
 	dp.register_callback_query_handler(parametres.util.back_to_parametres, lambda query: query.data == "back_to_parametres", state="*", chat_type=types.ChatType.PRIVATE)

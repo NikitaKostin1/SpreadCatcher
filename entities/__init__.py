@@ -9,3 +9,8 @@ from .parametres import (
 	TesterParametresChecker
 )
 from .input_error import InputError
+# from .signal import Signal
+from .parsing import (
+	BinanceParser, HuobiParser,
+	BybitParser, OkxParser
+)

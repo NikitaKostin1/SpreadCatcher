@@ -1,6 +1,6 @@
 from asyncpg.connection import Connection
 from datetime import datetime, timedelta
-from typing import Union
+from typing import Union, Tuple
 from config import logger
 
 from entities import (
@@ -200,3 +200,99 @@ async def update_user_parameter(connection: Connection, user_id: int, column: st
 		logger.error(f"{user_id}: {e}")
 		return False
 
+
+@logger.catch
+async def is_bot_on(connection: Connection, user_id: int) -> bool:
+	"""
+	Checks if the bot is enabled for a user.
+	Returns True if the bot is enabled for the user, False otherwise.
+	"""
+	try:
+		is_bot_on = await connection.fetchval(f"""
+			SELECT is_bot_on
+			FROM users
+			WHERE user_id = {user_id};
+		""")
+
+		return bool(is_bot_on)
+	except Exception as e:
+		logger.error(f"{user_id}: {e}")
+		return False
+
+
+@logger.catch
+async def enable_bot(connection: Connection, user_id: int) -> bool:
+	"""
+	Enables the bot for a user.
+	Returns True if the bot is successfully enabled, False otherwise.
+	"""
+	try:
+		await connection.execute(f"""
+			BEGIN TRANSACTION ISOLATION LEVEL repeatable read;
+			UPDATE users
+			SET 
+				is_bot_on = true
+			WHERE user_id = {user_id};
+			COMMIT;
+		""")
+
+		return True
+	except Exception as e:
+		logger.error(f"{user_id}: {e}")
+		return False
+
+
+@logger.catch
+async def disable_bot(connection: Connection, user_id: int) -> bool:
+	"""
+	Disables the bot for a user.
+	Returns True if the bot is successfully disabled, False otherwise.
+	"""
+	try:
+		await connection.execute(f"""
+			BEGIN TRANSACTION ISOLATION LEVEL repeatable read;
+			UPDATE users
+			SET 
+				is_bot_on = false
+			WHERE user_id = {user_id};
+			COMMIT;
+		""")
+
+		return True
+	except Exception as e:
+		logger.error(f"{user_id}: {e}")
+		return False
+
+
+@logger.catch
+async def get_active_users(connection: Connection) -> Tuple[User]:
+	"""
+	Return tuple of Users where is_bot_on = True
+	"""
+	try:
+		active_users = list()
+		records = await connection.fetch("""
+			SELECT * 
+			FROM users
+			WHERE is_bot_on = true;
+		""")
+
+		for record in records:
+			user = User(
+				user_id=record.get("user_id"),
+				username=record.get("username"),
+				entry_date=record.get("entry_date"),
+				is_bot_on=record.get("is_bot_on"),
+				is_subscription_active=record.get("is_subscription_active"),
+				subscription_id=record.get("subscription_id"),
+				subscription_begin_date=record.get("subscription_begin_date"),
+				is_test_active=record.get("is_test_active"),
+				test_begin_date=record.get("test_begin_date")
+			)
+			active_users.append(user)
+
+
+		return tuple(active_users)
+	except Exception as e:
+		logger.error(e)
+		return tuple()
