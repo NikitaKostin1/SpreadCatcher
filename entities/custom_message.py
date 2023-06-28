@@ -18,7 +18,7 @@ class MessageHandler:
 
 
 	@logger.catch
-	async def acquire(self, message: types.Message, text: str=None,reply_markup: types.InlineKeyboardMarkup=None) -> None:
+	async def acquire(self, message: types.Message, text: str=None, reply_markup: types.InlineKeyboardMarkup=None) -> None:
 		"""
 		Rewrite message in storage 
 		or set new message.
@@ -27,27 +27,27 @@ class MessageHandler:
 		if not message:
 			return None
 
-		USER_ID = message["chat"]["id"]
+		user_id = message["chat"]["id"]
 
-		if USER_ID in self.storage:
-			await self.edit(USER_ID, text, reply_markup=reply_markup)
+		if user_id in self.storage:
+			await self.edit(user_id, text, reply_markup=reply_markup)
 
-		self.storage[USER_ID] = message
+		self.storage[user_id] = message
 
 
 	@logger.catch
-	async def release(self, USER_ID: int) -> types.Message:
+	async def release(self, user_id: int) -> types.Message:
 		"""
 		Deletes message from storage by user_id
 		Returns rewritten message: types.Message
 		"""
-		if not USER_ID in self.storage:
+		if not user_id in self.storage:
 			return
-		if not self.storage[USER_ID]:
+		if not self.storage[user_id]:
 			return
 
-		message = self.storage[USER_ID]
-		self.storage[USER_ID] = None
+		message = self.storage[user_id]
+		self.storage[user_id] = None
 		message_id = message["message_id"]
 
 		if "text" in message:
@@ -57,7 +57,7 @@ class MessageHandler:
 
 		try:
 			await bot.edit_message_text(
-				chat_id=USER_ID,
+				chat_id=user_id,
 				message_id=message_id,
 				text=text,
 				reply_markup=None,
@@ -69,19 +69,18 @@ class MessageHandler:
 		return message
 
 
-
 	@logger.catch
-	async def edit(self, USER_ID: int, text: str=None, reply_markup: types.InlineKeyboardMarkup=None) -> Union[types.Message, None]:
+	async def edit(self, user_id: int, text: str=None, reply_markup: types.InlineKeyboardMarkup=None) -> Union[types.Message, None]:
 		"""
 		Edit message from storage
 		Return bool value of operation
 		"""
-		if not USER_ID in self.storage:
+		if not user_id in self.storage:
 			return None
-		if not self.storage[USER_ID]:
+		if not self.storage[user_id]:
 			return None			
 
-		message = self.storage[USER_ID]	
+		message = self.storage[user_id]	
 		message_id = message["message_id"]
 
 		if not text:
@@ -91,30 +90,29 @@ class MessageHandler:
 				text = message["caption"]
 
 		try:
-			msg = await bot.edit_message_text(
-				chat_id=USER_ID,
-				message_id=message_id,
+			msg = await message.edit_text(
 				text=text,
-				reply_markup=reply_markup,
-				disable_web_page_preview=True
+				reply_markup=reply_markup
 			)
+			await self.acquire(msg, text, reply_markup)
+
 			return msg
 		except:
 			return None
 
 
 	@logger.catch
-	async def delete(self, USER_ID: int) -> bool:
+	async def delete(self, user_id: int) -> bool:
 		"""
 		Deletes message from chat
 		(Remains in storage)
 		"""
-		if not USER_ID in self.storage:
+		if not user_id in self.storage:
 			return False
-		if not self.storage[USER_ID]:
+		if not self.storage[user_id]:
 			return False	
 
-		message = await self.release(USER_ID)
+		message = await self.release(user_id)
 
 		try:
 			await message.delete()
@@ -125,7 +123,7 @@ class MessageHandler:
 
 
 	@logger.catch
-	async def edit_media(self, USER_ID: int, media: InputMedia) -> bool:
+	async def edit_media(self, user_id: int, media: InputMedia) -> bool:
 		"""
 		Use this method to edit animation, audio, document, photo, or video messages. 
 		If a message is part of a message album, then it can be edited only to an audio for audio albums, 
@@ -134,12 +132,12 @@ class MessageHandler:
 
 		https://docs.aiogram.dev/en/dev-3.x/api/methods/edit_message_media.html
 		"""
-		if not USER_ID in self.storage:
+		if not user_id in self.storage:
 			return
-		if not self.storage[USER_ID]:
+		if not self.storage[user_id]:
 			return False
 
-		message = self.storage[USER_ID]	
+		message = self.storage[user_id]	
 		# message_id = message["message_id"]
 
 		try:
@@ -152,13 +150,13 @@ class MessageHandler:
 
 
 	@logger.catch
-	async def get_message(self, USER_ID: int) -> types.Message:
-		if not USER_ID in self.storage:
+	async def get_message(self, user_id: int) -> types.Message:
+		if not user_id in self.storage:
 			return None
-		if not self.storage[USER_ID]:
+		if not self.storage[user_id]:
 			return None
 
-		return self.storage[USER_ID]
+		return self.storage[user_id]
 
 
 
