@@ -101,7 +101,7 @@ class BybitParser(Parser):
 
 			# Determine the position of the advertisement in the list
 			self.determine_adv_position(
-				advertisements, advertisement, adv_type
+				advertisement, adv_type
 			)
 			
 		else:
@@ -138,7 +138,7 @@ class BybitParser(Parser):
 			try:
 				response = json.loads(await client_response.text())
 				if response["result"]["count"] == 0:
-					logger.warning("Bybit 0 adverstisments")
+					# logger.warning(f"Bybit {adv_type} 0 adverstisments: {self.currency=}, {self.fiat=}, {bank=}, {self.limits=}")
 					return
 			except Exception as e:
 				# logger.error(f"Huobi parser: {e}")

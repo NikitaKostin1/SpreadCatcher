@@ -17,6 +17,7 @@ from keyboards.user import (
 
 
 
+@logger.catch
 def date_to_int(date: datetime) -> int:
 	year, month, day = date.year, date.month, date.day
 	return ((year-1)*365 + (year-1)//4 - (year-1)//100 + (year-1)//400
@@ -38,12 +39,16 @@ async def send_video( \
 			user_id, video=video, caption=caption, reply_markup=markup
 		)
 		return msg
-	except:
+	except Exception as e:
+		# TODO: check exception
 		if caption:
-			msg = await bot.send_message(
-				user_id, caption, reply_markup=markup,
-				disable_web_page_preview=True
-			)
+			try:
+				msg = await bot.send_message(
+					user_id, caption, reply_markup=markup,
+					disable_web_page_preview=True
+				)
+			except BotBlocked:
+				return
 			return msg
 
 
@@ -59,12 +64,16 @@ async def send_photo( \
 			user_id, photo=photo, caption=caption, reply_markup=markup
 		)
 		return msg
-	except:
+	except Exception as e:
+		# TODO: check exception
 		if caption:
-			msg = await bot.send_message(
-				user_id, caption, reply_markup=markup,
-				disable_web_page_preview=True
-			)
+			try:
+				msg = await bot.send_message(
+					user_id, caption, reply_markup=markup,
+					disable_web_page_preview=True
+				)
+			except BotBlocked:
+				return
 			return msg
 
 

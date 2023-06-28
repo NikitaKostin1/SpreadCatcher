@@ -11,6 +11,8 @@ from .parametres import (
 from .input_error import InputError
 # from .signal import Signal
 from .parsing import (
+	Parser,
 	BinanceParser, HuobiParser,
-	BybitParser, OkxParser
+	BybitParser, OkxParser, 
+	PexpayParser
 )

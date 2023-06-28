@@ -118,7 +118,7 @@ class BinanceParser(Parser):
 
 			# Determine the position of the advertisement
 			self.determine_adv_position(
-				advertisements, advertisement, adv_type
+				advertisement, adv_type
 			)
 			
 		else:
@@ -163,6 +163,10 @@ class BinanceParser(Parser):
 			'https://p2p.binance.com/bapi/c2c/v2/friendly/c2c/adv/search',
 			headers=self.headers, json=parametres_json) as client_response:
 			response = json.loads(str(await client_response.text()))
+
+			if not response["data"]:
+				# logger.warning(f"Binance {adv_type} 0 adverstisments: {self.currency=}, {self.fiat=}, {bank=}, {self.limits=}")
+				return
 
 		if not response["success"]:
 			logger.error(response)

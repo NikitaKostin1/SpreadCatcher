@@ -1,6 +1,7 @@
 from config import logger
 import threading
 import asyncio
+from asyncio.windows_events import ProactorEventLoop
 
 from . import thread
 
@@ -9,17 +10,16 @@ from . import thread
 @logger.catch
 def start_server():
 	"""
-	Starts the signals server in a separate thread.
+	Starts the signals server in a separate thread
 	"""
-	def asynchronous_start(wait_for=120):
-		loop = asyncio.new_event_loop()
+	def asynchronous_start(wait_for, loop: ProactorEventLoop):
 		asyncio.set_event_loop(loop)
+		loop.create_task(thread.server(wait_for))
 
-		loop.run_until_complete(thread.server(wait_for))
-		loop.close()
-
+	loop = asyncio.get_event_loop()
 	server_thread = threading.Thread(
-		target=asynchronous_start, args=(120,)
+		target=asynchronous_start, args=(120, loop)
 	)
 	server_thread.daemon = True
 	server_thread.start()
+

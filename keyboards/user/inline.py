@@ -77,3 +77,15 @@ for fiat in available_fiats:
 	parametres_fiat.insert(fiat_btn)
 complete_btn = InlineKeyboardButton(text="Готово ✅", callback_data=f"set_fiat complete")
 parametres_fiat.add(complete_btn)
+
+
+def get_signal_keyboard(bid_url: str, ask_url: str) -> InlineKeyboardMarkup:
+	signal = InlineKeyboardMarkup(row_width=2)
+	bid_btn = InlineKeyboardButton(text="Купить", url=bid_url)
+	ask_btn = InlineKeyboardButton(text="Продать", url=ask_url)
+	signal.row(bid_btn, ask_btn)
+
+	return signal
+
+
+

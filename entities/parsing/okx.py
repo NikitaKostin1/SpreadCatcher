@@ -104,14 +104,14 @@ class OkxParser(Parser):
 			)
 
 			advertisement = Advertisement(
-				market="Okx",
+				market="OKX",
 				conditions=conditions,
 				advertiser=advertiser
 			)
 
 			# Determine the position of the advertisement in the list
 			self.determine_adv_position(
-				advertisements, advertisement, adv_type
+				advertisement, adv_type
 			)
 			
 		else:
@@ -123,7 +123,7 @@ class OkxParser(Parser):
 	@logger.catch
 	async def _get_advertisements(self, adv_type: Union["bid", "ask"], bank: str, session: ClientSession) -> NoReturn:
 		"""
-		Fetch advertisements for the given advertisement type and bank using the Okx API.
+		Fetch advertisements for the given advertisement type and bank using the OKX API.
 		"""
 		if bank not in OkxParser.banks_alias:
 			return
@@ -147,10 +147,10 @@ class OkxParser(Parser):
 			try:
 				response = json.loads(await client_response.text())
 				if not response["data"][url_format[adv_type]]:
-					logger.warning("Okx 0 adverstisments")
+					# logger.warning(f"OKX {adv_type} 0 adverstisments: {self.currency=}, {self.fiat=}, {bank=}, {self.limits=}")
 					return
 			except Exception as e:
-				logger.error(f"Okx parser: {e}")
+				# logger.error(f"OKX parser (most likely Cloudflare): {e}")
 				return
 
 		self._adv_validation(response["data"][url_format[adv_type]], adv_type, bank)

@@ -8,9 +8,18 @@ class AdvСonditions:
 	fiat: str
 	currency: str
 	price: float
-	bank: tuple
+	bank: str
 	limits_min: int
 	limits_max: int
+
+
+	def __post_init__(self):
+		self.fiat = str(self.fiat)
+		self.currency = str(self.currency)
+		self.price = float(self.price)
+		self.bank = str(self.bank)
+		self.limits_min = int(self.limits_min)
+		self.limits_max = int(self.limits_max)
 
 
 

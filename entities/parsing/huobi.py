@@ -34,7 +34,7 @@ class HuobiParser(Parser):
 	}
 	banks_alias = {
 		"A-Bank": "149",
-		"AdvCash": "20",
+		"AdvCash": "0",
 		"AirTM": "75",
 		"Alfa-bank": "25",
 		"Bank_Transfer": "1",
@@ -126,7 +126,7 @@ class HuobiParser(Parser):
 
 			# Determine the position of the advertisement in the list
 			self.determine_adv_position(
-				advertisements, advertisement, adv_type
+				advertisement, adv_type
 			)
 			
 		else:
@@ -159,11 +159,10 @@ class HuobiParser(Parser):
 			try:
 				response = json.loads(await client_response.text())
 				if response["totalCount"] == 0:
-					logger.info(response)
+					# logger.warning(f"Huobi {adv_type} 0 adverstisments: {self.currency=}, {self.fiat=}, {bank=}, {self.limits=}")
 					return
 			except Exception as e:
-				logger.error(f"Huobi parser (most likely Cloudflare): {e}")
-				# logger.error(await client_response.text())
+				# logger.error(f"Huobi parser (most likely Cloudflare): {e}")
 				return
 
 		self._adv_validation(response, adv_type, bank)

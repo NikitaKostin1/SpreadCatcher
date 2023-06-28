@@ -9,3 +9,4 @@ from .binance import BinanceParser
 from .huobi import HuobiParser
 from .bybit import BybitParser
 from .okx import OkxParser
+from .pexpay import PexpayParser

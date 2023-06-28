@@ -94,7 +94,6 @@ class Parser:
 	@logger.catch
 	def determine_adv_position(
 		self,
-		advertisements: Dict["best_adv", "second_adv"],
 		advertisement: Advertisement,
 		adv_type: Union["bid", "ask"]
 	) -> NoReturn:
