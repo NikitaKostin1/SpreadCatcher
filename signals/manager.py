@@ -12,7 +12,7 @@ from keyboards.user import (
 
 from typing import NoReturn, Tuple
 from entities.parsing.types import (
-	ParserResponse
+	ParserResponse, Advertisement
 )
 from entities import (
 	Parser,
@@ -188,28 +188,25 @@ async def generate_markup(
 	advertiser_id_bid = bid.advertiser.advertiser_id
 	advertiser_id_ask = ask.advertiser.advertiser_id
 
-	match bid.market:
-		case "Binance":
-			bid_url = f"https://p2p.binance.com/en/advertiserDetail?advertiserNo={advertiser_id_bid}"
-		case "Huobi":
-			bid_url = f"https://c2c.huobi.com/ru-ru/trader/{advertiser_id_bid}"
-		case "Bybit":
-			bid_url = f"https://www.bybit.com/fiat/trade/otc/?actionType=1&token={ask.conditions.currency}&fiat={ask.conditions.fiat}"
-		case "OKX":
-			bid_url = f"https://www.okx.com/ru/p2p/ads-merchant?publicUserId={advertiser_id_bid}"	
-		case "PexPay":
-			bid_url = f"https://www.pexpay.com/en/advertiserDetail?advertiserNo={advertiser_id_bid}"
+	bid_urls = {
+		"Binance": f"https://p2p.binance.com/en/advertiserDetail?advertiserNo={advertiser_id_bid}",
+		"Huobi": f"https://c2c.huobi.com/ru-ru/trader/{advertiser_id_bid}",
+		"Bybit": f"https://www.bybit.com/fiat/trade/otc/?actionType=1&token={ask.conditions.currency}&fiat={ask.conditions.fiat}",
+		"OKX": f"https://www.okx.com/ru/p2p/ads-merchant?publicUserId={advertiser_id_bid}",
+		"PexPay": f"https://www.pexpay.com/en/advertiserDetail?advertiserNo={advertiser_id_bid}"
+	}
+	ask_urls = {
+		"Binance": f"https://p2p.binance.com/en/advertiserDetail?advertiserNo={advertiser_id_ask}",
+		"Huobi": f"https://c2c.huobi.com/ru-ru/trader/{advertiser_id_ask}",
+		"Bybit": f"https://www.bybit.com/fiat/trade/otc/?actionType=0&token={ask.conditions.currency}&fiat={ask.conditions.fiat}",
+		"OKX": f"https://www.okx.com/ru/p2p/ads-merchant?publicUserId={advertiser_id_ask}",
+		"PexPay": f"https://www.pexpay.com/en/advertiserDetail?advertiserNo={advertiser_id_ask}"
+	}
 
-	match ask.market:
-		case "Binance":
-			ask_url = f"https://p2p.binance.com/en/advertiserDetail?advertiserNo={advertiser_id_ask}"
-		case "Huobi":
-			ask_url = f"https://c2c.huobi.com/ru-ru/trader/{advertiser_id_ask}"
-		case "Bybit":
-			ask_url = f"https://www.bybit.com/fiat/trade/otc/?actionType=0&token={ask.conditions.currency}&fiat={ask.conditions.fiat}"
-		case "OKX":
-			ask_url = f"https://www.okx.com/ru/p2p/ads-merchant?publicUserId={advertiser_id_ask}"
-		case "PexPay":
-			ask_url = f"https://www.pexpay.com/en/advertiserDetail?advertiserNo={advertiser_id_ask}"
+	try:
+		bid_url = bid_urls[bid.market]
+		ask_url = ask_urls[ask.market]
+	except KeyError:
+		return None
 
 	return ikb.get_signal_keyboard(bid_url, ask_url)
