@@ -38,11 +38,10 @@ class Parameter:
 			return round(value, 2)
 
 		available_values = getattr(self, "available_values", None)
-		if available_values:
+		if available_values and isinstance(value, list):
 			for val in value:
 				if val not in available_values:
 					error_message = f"Invalid value '{val}' for attribute '{self.title}'"
-					logger.error(error_message)
 					raise ValueError(error_message)
 
 		return value
@@ -179,10 +178,11 @@ class StandardParametres(Parametres):
 	banks: Banks = field(default_factory=lambda: Banks([
 		"QIWI", "Tinkoff", "YandexMoney",
 		"Payeer", "AdvCash", "Sberbank",
-		"SBP", "Alfa-bank", "RaiffeisenBank", "RosBank"
+		"SBP", "Alfa-bank", "RaiffeisenBank",
+		"RosBank"
 	]))
 	markets: Markets = field(default_factory=lambda: Markets([
-		"Binance", "Huobi", "Bybit", "OKX", "LocalBitcoin"
+		"Binance", "Huobi", "Bybit", "OKX", "PexPay"
 	]))
 	spread: Spread = Spread(1.0)
 	bid_type: BidType = BidType("Taker")
