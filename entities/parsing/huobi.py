@@ -143,8 +143,8 @@ class HuobiParser(Parser):
 			return
 
 		url_format = {
-			"bid": "buy",
-			"ask": "sell"
+			"bid": "sell",
+			"ask": "buy"
 		}
 
 		url = "https://www.huobi.com/-/x/otc/v1/data/trade-market?" + \

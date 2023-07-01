@@ -193,4 +193,4 @@ class Parser:
 			bool: True if the advertiser is valid, False if it is a scam.
 		"""
 		return not\
-		advertiser_advertisements_amount < 20 or advertiser_finish_rate < 70
+		(advertiser_advertisements_amount < 20 or advertiser_finish_rate < 70)
