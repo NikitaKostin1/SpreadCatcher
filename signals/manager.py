@@ -10,12 +10,12 @@ from keyboards.user import (
 	inline as ikb
 )
 
-from typing import NoReturn, Tuple
+from typing import NoReturn, Union, Tuple
 from entities.parsing.types import (
 	ParserResponse, Advertisement
 )
 from entities import (
-	Parser,
+	Parser, Signal,
 	BinanceParser, HuobiParser,
 	BybitParser, OkxParser, PexpayParser,
 	Parametres
@@ -76,8 +76,9 @@ async def gather_parsers_responses(
 @logger.catch	
 async def send_signal(
 	user_id: int, parametres: Parametres,
-	bid: ParserResponse, ask: ParserResponse
-) -> bool:
+	bid: ParserResponse, ask: ParserResponse,
+	former_signals: Tuple[Signal], signal_index: int
+) -> Union[Signal, None]:
 	"""
 	Send a signal to the user if the spread meets the parameters.
 
@@ -86,23 +87,36 @@ async def send_signal(
 		parametres (Parametres): The parameters to use for signal filtering.
 		bid (ParserResponse): The bid response from a parser.
 		ask (ParserResponse): The ask response from a parser.
+		former_signals (Tuple[Signal]): Previously sent signals.
+		signal_index (int): Index of the signal to compare with.
 
 	Returns:
-		bool: True if the signal is sent, False otherwise.
+		Union[Signal, None]: Signal object if the signal is sent, None otherwise.
 	"""
+	# Define the threshold for identifying scam spreads
 	scam_spread = 7
 
 	bid_price = bid.conditions.price
 	ask_price = ask.conditions.price
 	spread = round((1 - bid_price / ask_price) * 100, 2)
-	logger.success(f"{spread}% | {bid_price} - {ask_price}")
 
-	# if spread > scam_spread:
-	# 	# Scam
-	# 	return False
+	if spread > scam_spread:
+		# Skip signals with scam spread
+		return None
 
 	if spread < parametres.spread.value:
-		return False
+		# Skip signals that do not meet the spread parameter
+		return None
+
+	if signal_index < len(former_signals):
+		# Check if the spread has decreased compared to a previous signal
+		former_bid_price = former_signals[signal_index].bid.conditions.price
+		former_ask_price = former_signals[signal_index].ask.conditions.price
+		former_spread = round((1 - former_bid_price / former_ask_price) * 100, 2)
+
+		if former_spread >= spread:
+			return former_signals[signal_index]
+
 
 	text = txt.message.format(
 		bid_market=bid.market,
@@ -120,22 +134,72 @@ async def send_signal(
 		fiat_symbol="p"
 	)
 
-	markup = await generate_markup(parametres, bid, ask)
+	markup = await generate_markup(bid, ask)
 
 	try:
-		await bot.send_message(user_id, text, reply_markup=markup)
+		if signal_index >= len(former_signals):
+			msg = await bot.send_message(
+				chat_id=user_id, 
+				text=text, 
+				reply_markup=markup,
+				disable_web_page_preview=True
+			)
+		else:
+			message_id = former_signals[signal_index].message_id
+			msg = await bot.edit_message_text(
+				chat_id=user_id,
+				message_id=message_id,
+				text=text,
+				reply_markup=markup,
+				disable_web_page_preview=True
+			)
 	except BotBlocked:
 		await user_manager.disable_bot(user_id)
+		return None
 
-	return True
+	signal = Signal(
+		message_id=msg.message_id,
+		bid=bid,
+		ask=ask
+	)
 
+	return signal
+
+
+@logger.catch
+async def delete_expired_signals(
+	user_id: int, sent_signals_amount: int,
+	former_signals: Tuple[Signal]
+) -> NoReturn:
+	"""
+	Delete expired signals that are no longer relevant.
+
+	Args:
+		user_id (int): The ID of the user.
+		sent_signals_amount (int): Number of signals sent.
+		former_signals (Tuple[Signal]): Previously sent signals.
+
+	Returns:
+		None
+	"""
+	for signal_ndx in range(sent_signals_amount, len(former_signals)):
+		signal = former_signals[signal_ndx]
+
+		try:
+			await bot.delete_message(
+				chat_id=user_id, 
+				message_id=signal.message_id
+			)
+		except:
+			pass
 
 
 @logger.catch
 async def iterate_advertisments(
 	user_id: int, parametres: Parametres,
-	responses: Tuple[ParserResponse]
-) -> bool:
+	responses: Tuple[ParserResponse],
+	former_signals: Tuple[Signal]
+) -> Tuple[Signal]:
 	"""
 	Iterate through responses and send signals to the user for valid bid-ask pairs.
 
@@ -143,12 +207,12 @@ async def iterate_advertisments(
 		user_id (int): The ID of the user.
 		parametres (Parametres): The parameters to use for signal filtering.
 		responses (Tuple[ParserResponse]): The responses from parsers.
+		former_signals (Tuple[Signal]): Previously sent signals.
 
 	Returns:
-		bool: True if at least one signal is sent, False otherwise.
+		Tuple[Signal]: Tuple of sent signals.
 	"""
-	logger.warning("Scam spread detection is turned off")
-	sent_signals = 0
+	sent_signals = list()
 
 	for response in responses:
 		bid = response.best_bid
@@ -160,25 +224,28 @@ async def iterate_advertisments(
 			if ask is None:
 				continue
 
-			is_signal_sent = await send_signal(user_id, parametres, bid, ask)
-			sent_signals += int(is_signal_sent)
+			signal = await send_signal(
+				user_id, parametres, bid, ask, 
+				former_signals, len(sent_signals)
+			)
+			if signal:
+				sent_signals.append(signal)
+
 			await asyncio.sleep(0.4)
 
-	return sent_signals
+	return tuple(sent_signals)
 
 
 
 
 @logger.catch
 async def generate_markup(
-	parametres: Parametres, 
 	bid: Advertisement, ask: Advertisement
 ) -> InlineKeyboardMarkup: 
 	"""
 	Generate an inline keyboard markup for the bid and ask responses
 
 	Args:
-		parametres (Parametres): The parameters used for parsing
 		bid (Advertisement): The bid advertisement
 		ask (Advertisement): The ask advertisement
 

@@ -6,15 +6,17 @@ import time
 from handlers.user import manager as user_manager
 from . import manager
 
-from typing import List, Tuple
+from typing import List, Tuple, Dict
 from entities.parsing.types import (
 	ParserResponse, Advertisement
 )
 from entities import (
-	User, Parametres
+	User, Parametres, Signal
 )
 
 
+# Dict with the tuple of signals sent to a user
+signals: Dict[int, Tuple[Signal]] = {}
 
 @logger.catch
 async def server(wait_for: int):
@@ -27,10 +29,10 @@ async def server(wait_for: int):
 
 	# List of user IDs that have been notified about inefficient parameters
 	notificated_users: List[int] = list()
-	acceptable_signals_amount = 5
+	min_acceptable_signals_amount = 5
 
 	while True:
-		await asyncio.sleep(wait_for)
+		await asyncio.sleep(5)
 		logger.success("Server ping")
 
 		active_users: List[User] = await user_manager.get_active_users()
@@ -51,21 +53,31 @@ async def server(wait_for: int):
 				continue
 
 			user_sent_signals = 0
+			if signals.get(user_id):
+				former_signals = signals[user_id]
+			else:
+				former_signals = tuple()
 
 			for currency in parametres.currencies.value:
 				parsers_responses = await manager.gather_parsers_responses(
 					currency, parametres
 				)
 
-				sent_signals = await manager.iterate_advertisments(
-					user_id, parametres, parsers_responses
+				sent_signals: Tuple[Signal] = await manager.iterate_advertisments(
+					user_id, parametres, parsers_responses, former_signals
 				)
-				user_sent_signals += sent_signals
+				user_sent_signals += len(sent_signals)
 
 			# Notification about inefficient parametres
-			if user_sent_signals < acceptable_signals_amount and \
+			if user_sent_signals < min_acceptable_signals_amount and \
 								not user_id in notificated_users:
 				await manager.notificate_user(user_id)
 				notificated_users.append(user_id)
+
+			signals[user_id] = sent_signals
+
+
+
+
 
 
