@@ -9,7 +9,7 @@ from .parametres import (
 	TesterParametresChecker
 )
 from .input_error import InputError
-# from .signal import Signal
+from .signal import Signal
 from .parsing import (
 	Parser,
 	BinanceParser, HuobiParser,
