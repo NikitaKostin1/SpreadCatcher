@@ -109,10 +109,10 @@ async def set_tester_as_expired(connection: Connection, user_id: int) -> bool:
 			BEGIN TRANSACTION ISOLATION LEVEL repeatable read;
 			UPDATE users
 			SET 
-				is_bot_on = false
-				is_subscription_active = False,
+				is_bot_on = false,
+				is_subscription_active = false,
 				subscription_id = NULL,
-				is_test_active = false,
+				is_test_active = false
 			WHERE user_id = {user_id};
 			COMMIT;
 		""")
