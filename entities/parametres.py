@@ -37,6 +37,14 @@ class Parameter:
 		elif isinstance(self, Spread):
 			return round(value, 2)
 
+		available_values = getattr(self, "available_values", None)
+		if available_values:
+			for val in value:
+				if val not in available_values:
+					error_message = f"Invalid value '{val}' for attribute '{self.title}'"
+					logger.error(error_message)
+					raise ValueError(error_message)
+
 		return value
 
 
