@@ -129,6 +129,27 @@ async def parametres(message: types.Message, state: FSMContext):
 	await MainMessage.acquire(msg)
 
 
+@logger.catch
+async def test_drive(message: types.Message, state: FSMContext):
+	"""
+	Handles the 'Test drive' reply keyboard button.
+	"""
+	await state.finish()
+	user_id = message["from"]["id"]
+	await AdditionalMessage.delete(user_id)
+
+	if await manager.is_tester(user_id) or \
+				await manager.is_subscription_active(user_id) or \
+				await manager.is_tester_expired(user_id):
+		return
+
+	msg = await message.answer(
+		txt.test_drive, 
+		reply_markup=ikb.test_drive,
+		disable_web_page_preview=True
+	)
+	await MainMessage.acquire(msg)
+
 
 @logger.catch
 async def channel(message: types.Message, state: FSMContext):

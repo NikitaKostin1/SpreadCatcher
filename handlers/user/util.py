@@ -4,13 +4,20 @@ from aiogram.types import (
 )
 from aiogram.utils.exceptions import BotBlocked
 from aiogram.types.input_file import InputFile
+from aiogram import types
 from datetime import datetime, timedelta
-import asyncio
 
 from config import logger
 from create_bot import bot
+from ..admin import manager as admin_manager
 from . import manager
 
+from assets import texts as txt
+from entities import (
+	MainMessage, 
+	User, Subscriptions,
+	StandardParametres
+)
 from keyboards.user import (
 	reply as rkb
 )
@@ -91,3 +98,55 @@ async def determine_reply_markup(user_id: int) -> ReplyKeyboardMarkup:
 
 	return rkb.new_user
 
+
+
+@logger.catch
+async def activate_test_drive(callback: types.CallbackQuery):
+	"""
+
+	"""
+	user_id = callback["message"]["chat"]["id"]
+	await callback.answer()
+	await MainMessage.delete(user_id)
+
+	user = await manager.get_user(user_id)
+
+	if not user:
+		# TODO: error message
+		await callback.message.answer(txt.error)
+		return
+
+	new_user = User(
+		user_id=user_id,
+		username=user.username,
+		entry_date=user.entry_date,
+		is_bot_on=False,
+		is_subscription_active=True,
+		subscription_id=Subscriptions.tester.subscription_id,
+		subscription_begin_date=datetime.now(),
+		is_test_active=True,
+		test_begin_date=datetime.now()
+	)
+	markup = rkb.tester
+	text = txt.tester_activated
+
+	user_updated = await admin_manager.update_user(new_user)
+
+	if not user_updated:
+		# TODO: error message
+		await message.answer("Ошибка!")
+		return
+
+	user_parametres_updated = await manager.update_user_parametres(
+		user_id, StandardParametres()
+	)
+
+	if not user_parametres_updated:
+		# TODO: error message
+		await callback.message.answer(txt.error)
+		return
+
+	msg = await callback.message.answer(
+		text, reply_markup=markup
+	)
+	await MainMessage.acquire(msg)

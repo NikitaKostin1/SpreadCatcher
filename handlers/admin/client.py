@@ -1,7 +1,6 @@
 from aiogram.utils.exceptions import BotBlocked
 from aiogram import types
 from datetime import datetime
-import asyncio
 
 from create_bot import bot, dp
 from config import logger

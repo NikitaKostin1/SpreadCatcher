@@ -32,7 +32,7 @@ async def server(wait_for: int):
 	min_acceptable_signals_amount = 5
 
 	while True:
-		await asyncio.sleep(5)
+		await asyncio.sleep(wait_for)
 		logger.success("Server ping")
 
 		active_users: List[User] = await user_manager.get_active_users()

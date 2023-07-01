@@ -19,6 +19,10 @@ channel = InlineKeyboardButton(text="📢 Канал", url="https://t.me/SpreadC
 support = InlineKeyboardButton(text="👨‍🔧 Поддержка", url="https://t.me/SC_Bot_Support")
 channel_kb.row(channel, support)
 
+test_drive = InlineKeyboardMarkup(row_width=1)
+start = InlineKeyboardButton(text="Начать тест-драйв", callback_data="test_drive")
+test_drive.add(start)
+
 payment_option = InlineKeyboardMarkup(row_width=2)
 transfer = InlineKeyboardButton(text="💸 Переводом", url="https://t.me/SC_Bot_Support")
 usdt = InlineKeyboardButton(text="🪙 USDT", url="https://t.me/SC_Bot_Support")
