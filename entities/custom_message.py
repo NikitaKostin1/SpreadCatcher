@@ -1,3 +1,4 @@
+from aiogram.utils.exceptions import MessageNotModified
 from aiogram.types.input_media import InputMedia
 from aiogram.types.input_file import InputFile
 from aiogram import types
@@ -29,8 +30,18 @@ class MessageHandler:
 
 		user_id = message["chat"]["id"]
 
+		if not text:
+			text = message["text"]
+
 		if user_id in self.storage:
-			await self.edit(user_id, text, reply_markup=reply_markup)
+			former_message = self.storage[user_id]
+			try:
+				await former_message.edit_text(
+					text=text,
+					reply_markup=reply_markup
+				)
+			except MessageNotModified:
+				pass
 
 		self.storage[user_id] = message
 
