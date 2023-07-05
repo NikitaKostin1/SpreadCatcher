@@ -215,12 +215,18 @@ async def iterate_advertisments(
 	sent_signals = list()
 
 	for response in responses:
-		bid = response.best_bid
+		if parametres.bid_type.value == "Taker":
+			bid = response.best_bid
+		else:
+			bid = response.second_ask
 		if bid is None:
 			continue
 
 		for response in responses:
-			ask = response.best_ask
+			if parametres.ask_type.value == "Taker":
+				ask = response.best_ask
+			else:
+				ask = response.second_bid
 			if ask is None:
 				continue
 

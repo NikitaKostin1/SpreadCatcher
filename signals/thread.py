@@ -75,9 +75,3 @@ async def server(wait_for: int):
 				notificated_users.append(user_id)
 
 			signals[user_id] = sent_signals
-
-
-
-
-
-
