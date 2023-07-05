@@ -34,14 +34,15 @@ class MessageHandler:
 			text = message["text"]
 
 		if user_id in self.storage:
-			former_message = self.storage[user_id]
-			try:
-				await former_message.edit_text(
-					text=text,
-					reply_markup=reply_markup
-				)
-			except MessageNotModified:
-				pass
+			if self.storage[user_id]:
+				former_message = self.storage[user_id]
+				try:
+					await former_message.edit_text(
+						text=text,
+						reply_markup=reply_markup
+					)
+				except MessageNotModified:
+					pass
 
 		self.storage[user_id] = message
 
