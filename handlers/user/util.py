@@ -26,6 +26,15 @@ from keyboards.user import (
 
 @logger.catch
 def date_to_int(date: datetime) -> int:
+	"""
+	Convert a datetime object to an integer representation.
+
+	Args:
+		date (datetime): The datetime object to convert.
+
+	Returns:
+		int: The integer representation of the date.
+	"""
 	year, month, day = date.year, date.month, date.day
 	return ((year-1)*365 + (year-1)//4 - (year-1)//100 + (year-1)//400
 			+ [0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334][month - 1]
@@ -103,7 +112,10 @@ async def determine_reply_markup(user_id: int) -> ReplyKeyboardMarkup:
 @logger.catch
 async def activate_test_drive(callback: types.CallbackQuery):
 	"""
+	Activate the test drive subscription for a user.
 
+	Args:
+		callback (types.CallbackQuery): The callback query triggering the activation.
 	"""
 	user_id = callback["message"]["chat"]["id"]
 	await callback.answer()
@@ -133,8 +145,7 @@ async def activate_test_drive(callback: types.CallbackQuery):
 	user_updated = await admin_manager.update_user(new_user)
 
 	if not user_updated:
-		# TODO: error message
-		await message.answer("Ошибка!")
+		await callback.message.answer(txt.error)
 		return
 
 	user_parametres_updated = await manager.update_user_parametres(
@@ -142,7 +153,6 @@ async def activate_test_drive(callback: types.CallbackQuery):
 	)
 
 	if not user_parametres_updated:
-		# TODO: error message
 		await callback.message.answer(txt.error)
 		return
 
