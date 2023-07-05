@@ -32,6 +32,7 @@ def register_commands_handlers(dp: Dispatcher):
 
 	# PARAMETRES
 	dp.register_callback_query_handler(parametres.util.back_to_parametres, lambda query: query.data == "back_to_parametres", state="*", chat_type=types.ChatType.PRIVATE)
+	dp.register_callback_query_handler(parametres.client.menu, lambda query: query.data == "parametres_menu", state="*", chat_type=types.ChatType.PRIVATE)
 	dp.register_callback_query_handler(parametres.client.limits, lambda query: query.data == "parametres limits", chat_type=types.ChatType.PRIVATE)
 	dp.register_callback_query_handler(parametres.client.banks, lambda query: query.data == "parametres banks", chat_type=types.ChatType.PRIVATE)
 	dp.register_callback_query_handler(parametres.client.currencies, lambda query: query.data == "parametres currencies", chat_type=types.ChatType.PRIVATE)

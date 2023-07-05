@@ -30,6 +30,12 @@ card = InlineKeyboardButton(text="💳 Картой", url="https://t.me/SC_Bot_S
 installment = InlineKeyboardButton(text="🏦 Рассрочка", url="https://t.me/SC_Bot_Support")
 payment_option.row(transfer, usdt).row(card, installment)
 
+trading_type_option = InlineKeyboardMarkup(row_width=1)
+p2p = InlineKeyboardButton(text="p2p", callback_data="parametres_menu")
+spot = InlineKeyboardButton(text="spot", url="https://t.me/SpreadCatcher_pro_Bot")
+p2p_spot = InlineKeyboardButton(text="p2p + spot", url="https://t.me/SpreadCatcher_pro_Bot")
+trading_type_option.add(p2p).add(spot).add(p2p_spot)
+
 parametres = InlineKeyboardMarkup(row_width=3)
 limits = InlineKeyboardButton(text="Сумма", callback_data="parametres limits")
 banks = InlineKeyboardButton(text="Платёжные системы", callback_data="parametres banks")

@@ -20,6 +20,37 @@ from keyboards.user import (
 
 
 @logger.catch
+async def menu(callback: types.CallbackQuery):
+	"""
+	Sets trading type as `p2p`
+	Handles the 'parametres_menu' callback. Displays the user's parameters.
+	"""
+	user_id = callback["message"]["chat"]["id"]
+	await MainMessage.delete(user_id)
+
+	TradingType = Parametres.get_annotations()["trading_type"]
+	trading_type = TradingType("p2p")
+
+	await util.save_parameter(user_id, trading_type)
+
+	is_bot_on = await manager.is_bot_on(user_id)
+	if is_bot_on:
+		bot_disabled = await manager.disable_bot(user_id)
+		await callback.message.answer(txt.bot_disabled)
+		await callback.message.answer(txt.bot_disabling_info)
+
+	text = await util.parametres_text(user_id)
+
+	if not text:
+		await callback.message.answer(txt.error)
+		return
+
+	msg = await callback.message.answer(text, reply_markup=ikb.parametres)
+	await MainMessage.acquire(msg)
+
+
+
+@logger.catch
 async def limits(callback: types.CallbackQuery):
 	"""
 	Handle the callback when the user clicks on the 'limits' button in the parametres menu.
