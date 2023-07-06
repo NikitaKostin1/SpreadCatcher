@@ -11,7 +11,6 @@ available_currencies = StandardParametres().currencies.available_values
 available_bid_types = StandardParametres().bid_type.available_values
 available_ask_types = StandardParametres().ask_type.available_values
 available_fiats = StandardParametres().fiat.available_values
-available_trading_types = StandardParametres().trading_type.available_values
 
 
 channel_kb = InlineKeyboardMarkup(row_width=2)

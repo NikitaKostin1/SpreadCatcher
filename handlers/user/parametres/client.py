@@ -22,16 +22,16 @@ from keyboards.user import (
 @logger.catch
 async def menu(callback: types.CallbackQuery):
 	"""
-	Sets trading type as `p2p`
+	Sets signals type as `p2p`
 	Handles the 'parametres_menu' callback. Displays the user's parameters.
 	"""
 	user_id = callback["message"]["chat"]["id"]
 	await MainMessage.delete(user_id)
 
-	TradingType = Parametres.get_annotations()["trading_type"]
-	trading_type = TradingType("p2p")
+	SignalsType = Parametres.get_annotations()["signals_type"]
+	signals_type = SignalsType("p2p")
 
-	await util.save_parameter(user_id, trading_type)
+	await util.save_parameter(user_id, signals_type)
 
 	is_bot_on = await manager.is_bot_on(user_id)
 	if is_bot_on:

@@ -22,7 +22,7 @@ CREATE TABLE users_parametres (
 	ask_type		VARCHAR(5) 	NOT NULL,
 	currencies		TEXT 		NOT NULL,
 	fiat 			VARCHAR(5) 	NOT NULL,
-	signals_type	VARCHAR(8)	NOT NULL,
+	signals_type	VARCHAR(8)	NOT NULL
 );
 
 -- Import data from supported_banks.csv

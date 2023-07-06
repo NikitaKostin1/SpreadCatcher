@@ -73,7 +73,7 @@ async def get_user_parametres(connection: Connection, user_id: int) -> Parametre
 			ask_type=record.get("ask_type"),
 			currencies=record.get("currencies"),
 			fiat=record.get("fiat"),
-			trading_type=record.get("trading_type")
+			signals_type=record.get("signals_type")
 		)
 
 		return parametres
@@ -138,7 +138,7 @@ async def set_new_user(connection: Connection, user: User) -> bool:
 				'{params.ask_type.value}',
 				'{" ".join(params.currencies.value)}',
 				'{params.fiat.value}',
-				'{params.trading_type.value}'
+				'{params.signals_type.value}'
 			);
 			COMMIT;
 		""")
@@ -168,7 +168,7 @@ async def update_user_parametres(connection: Connection, user_id: int, params: P
 				ask_type='{params.ask_type.value}',
 				currencies='{" ".join(params.currencies.value)}',
 				fiat='{params.fiat.value}',
-				trading_type='{params.trading_type.value}'
+				signals_type='{params.signals_type.value}'
 			WHERE user_id = {user_id};
 			COMMIT;
 		""")

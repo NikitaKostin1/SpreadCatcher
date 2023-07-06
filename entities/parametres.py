@@ -110,9 +110,9 @@ class Fiat(Parameter):
 	])
 
 @dataclass
-class TradingType(Parameter):
+class SignalsType(Parameter):
 	value: str
-	title: str = "trading_type"
+	title: str = "signals_type"
 	available_values: list = field(default_factory=lambda: [
 		"p2p"
 	])
@@ -132,7 +132,7 @@ class Parametres:
 	ask_type: AskType = field(default_factory=AskType)
 	currencies: Currencies = field(default_factory=Currencies)
 	fiat: Fiat = field(default_factory=Fiat)
-	trading_type: TradingType = field(default_factory=TradingType)
+	signals_type: SignalsType = field(default_factory=SignalsType)
 
 
 	def __setattr__(self, name, value):
@@ -191,7 +191,7 @@ class StandardParametres(Parametres):
 		"USDT", "BTC", "ETH"
 	]))
 	fiat: Fiat = Fiat("RUB")
-	trading_type: TradingType = TradingType("p2p")
+	signals_type: SignalsType = SignalsType("p2p")
 
 
 
