@@ -109,30 +109,18 @@ async def switch_bot_state(message: types.Message, state: FSMContext):
 @logger.catch
 async def parametres(message: types.Message, state: FSMContext):
 	"""
-	Handles the 'parametres' reply keyboard button. Displays the user's parameters.
+	Handles the 'parametres' reply keyboard button.
+	Send trading type option message
 	"""
 	await state.finish()
 	user_id = message["from"]["id"]
 	await AdditionalMessage.delete(user_id)
 
 	msg = await message.answer(
-		txt.trading_type_option,
-		reply_markup=ikb.trading_type_option
+		txt.signals_type_option,
+		reply_markup=ikb.signals_type_option
 	)
 	await MainMessage.acquire(msg)
-
-	# is_bot_on = await manager.is_bot_on(user_id)
-	# if is_bot_on:
-	# 	await switch_bot_state(message, state)
-
-	# text = await params_util.parametres_text(user_id)
-
-	# if not text:
-	# 	await message.answer(txt.error)
-	# 	return
-
-	# msg = await message.answer(text, reply_markup=ikb.parametres)
-	# await MainMessage.acquire(msg)
 
 
 @logger.catch

@@ -1,4 +1,4 @@
-trading_type_option = """
+signals_type_option = """
 Выберите подходящий тип торговли
 """
 

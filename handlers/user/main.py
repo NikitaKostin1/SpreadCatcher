@@ -30,6 +30,9 @@ def register_commands_handlers(dp: Dispatcher):
 	dp.register_message_handler(client.parametres, lambda message: message.text == "⚙️ Настройки", state="*", chat_type=types.ChatType.PRIVATE)
 	dp.register_message_handler(client.test_drive, lambda message: message.text == "🕊 Тест-драйв", state="*", chat_type=types.ChatType.PRIVATE)
 
+	# CALLBACKS
+	dp.register_callback_query_handler(util.activate_test_drive, lambda query: query.data == "test_drive", chat_type=types.ChatType.PRIVATE)
+
 	# PARAMETRES
 	dp.register_callback_query_handler(parametres.util.back_to_parametres, lambda query: query.data == "back_to_parametres", state="*", chat_type=types.ChatType.PRIVATE)
 	dp.register_callback_query_handler(parametres.client.menu, lambda query: query.data == "parametres_menu", state="*", chat_type=types.ChatType.PRIVATE)
@@ -40,8 +43,6 @@ def register_commands_handlers(dp: Dispatcher):
 	dp.register_callback_query_handler(parametres.client.spread, lambda query: query.data == "parametres spread", chat_type=types.ChatType.PRIVATE)
 	dp.register_callback_query_handler(parametres.client.trading_type, lambda query: query.data == "parametres trading_type", chat_type=types.ChatType.PRIVATE)
 	dp.register_callback_query_handler(parametres.client.fiat, lambda query: query.data == "parametres fiat", chat_type=types.ChatType.PRIVATE)
-
-	dp.register_callback_query_handler(util.activate_test_drive, lambda query: query.data == "test_drive", chat_type=types.ChatType.PRIVATE)
 
 	# CALLBACK PARAMETRES
 	dp.register_callback_query_handler(parametres.callbacks.handlers.banks, lambda query: query.data.split()[0] == "set_bank", chat_type=types.ChatType.PRIVATE)
