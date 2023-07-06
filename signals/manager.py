@@ -59,6 +59,8 @@ async def gather_parsers_responses(
 	parsers_responses = list()
 
 	for market in parametres.markets.value:
+		if not parsers.get(market):
+			continue
 		MarketParser: Parser = parsers[market]
 
 		parser = MarketParser(

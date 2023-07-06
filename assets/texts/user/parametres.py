@@ -4,7 +4,7 @@ signals_type_option = """
 
 
 parametres = """ \
-Настройки параметров аккаунта <b>SCBot pro</b>:
+Настройки параметров аккаунта <b>SCBot</b>:
   
 • <b>Сумма банка:</b> {limits}
 • <b>Платёжные системы:</b> {banks}
