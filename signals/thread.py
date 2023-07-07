@@ -31,8 +31,10 @@ async def server(wait_for: int):
 	notificated_users: List[int] = list()
 	min_acceptable_signals_amount = 5
 
+	await manager.set_fiats_symbols()
+
 	while True:
-		await asyncio.sleep(wait_for)
+		await asyncio.sleep(10)
 		logger.success("Server ping")
 
 		active_users: List[User] = await user_manager.get_active_users()

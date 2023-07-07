@@ -1,6 +1,8 @@
 from aiogram.types import InlineKeyboardMarkup
 from aiogram.utils.exceptions import BotBlocked
+
 from handlers.user import manager as user_manager
+from database import parametres as db
 from assets import texts as txt
 from create_bot import bot
 from config import logger
@@ -20,6 +22,15 @@ from entities import (
 	BybitParser, OkxParser, PexpayParser,
 	Parametres
 )
+
+
+
+fiats_symbols: dict = dict()
+async def set_fiats_symbols():
+	global fiats_symbols
+
+	symbols: dict = await db.fiats_symbols()
+	fiats_symbols = symbols
 
 
 
@@ -119,6 +130,10 @@ async def send_signal(
 		if former_spread >= spread:
 			return former_signals[signal_index]
 
+	if fiats_symbols.get(parametres.fiat.value):
+		fiat_symbol = fiats_symbols[parametres.fiat.value]
+	else:
+		fiat_symbol = parametres.fiat.value
 
 	text = txt.message.format(
 		bid_market=bid.market,
@@ -133,7 +148,7 @@ async def send_signal(
 		ask_limits_min=f"{ask.conditions.limits_min:,}",
 		ask_limits_max=f"{ask.conditions.limits_max:,}",
 		ask_bank=ask.conditions.bank,
-		fiat_symbol="p"
+		fiat_symbol=fiat_symbol
 	)
 
 	markup = await generate_markup(bid, ask)
