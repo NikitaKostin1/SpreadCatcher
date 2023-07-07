@@ -187,7 +187,7 @@ async def get_users_with_non_tester_subscription(connection: Connection) -> List
 			SELECT * FROM users 
 			WHERE 
 				is_test_active = false AND
-				is_subscription_active = true AND;
+				is_subscription_active = true;
 		""")
 
 		for record in records:
