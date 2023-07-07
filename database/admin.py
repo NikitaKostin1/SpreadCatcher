@@ -124,6 +124,28 @@ async def set_tester_as_expired(connection: Connection, user_id: int) -> bool:
 
 
 @logger.catch
+async def set_subscription_as_expired(connection: Connection, user_id: int) -> bool:
+	"""
+	Sets the subscription as expired for a user in the database
+	"""
+	try:
+		await connection.execute(f"""
+			BEGIN TRANSACTION ISOLATION LEVEL repeatable read;
+			UPDATE users
+			SET 
+				is_bot_on = false,
+				is_subscription_active = false
+			WHERE user_id = {user_id};
+			COMMIT;
+		""")
+
+		return True
+	except Exception as e:
+		logger.error(f"{user_id}: {e}")
+		return False
+
+
+@logger.catch
 async def get_tester_users(connection: Connection) -> List[User]:
 	"""
 	Retrieves a list of users with active tester subscriptions from the database.
@@ -132,6 +154,41 @@ async def get_tester_users(connection: Connection) -> List[User]:
 	try:
 		records = await connection.fetch("""
 			SELECT * FROM users WHERE is_test_active = true;
+		""")
+
+		for record in records:
+			user = User(
+				user_id=record.get("user_id"),
+				username=record.get("username"),
+				entry_date=record.get("entry_date"),
+				is_bot_on=record.get("is_bot_on"),
+				is_subscription_active=record.get("is_subscription_active"),
+				subscription_id=record.get("subscription_id"),
+				subscription_begin_date=record.get("subscription_begin_date"),
+				is_test_active=record.get("is_test_active"),
+				test_begin_date=record.get("test_begin_date")
+			)
+			users.append(user)
+
+		return users
+	except Exception as e:
+		logger.error(e)
+		return list()
+
+
+@logger.catch
+async def get_users_with_non_tester_subscription(connection: Connection) -> List[User]:
+	"""
+	Retrieve a list of users with non-tester subscription from the database
+	"""
+	users = list()
+	try:
+		records = await connection.fetch("""
+			SELECT * FROM users 
+			WHERE 
+				is_test_active = false AND
+				is_subscription_active = true AND
+				user_id = 381906725;
 		""")
 
 		for record in records:

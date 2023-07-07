@@ -34,7 +34,7 @@ async def server(wait_for: int):
 	await manager.set_fiats_symbols()
 
 	while True:
-		await asyncio.sleep(10)
+		await asyncio.sleep(wait_for)
 		logger.success("Server ping")
 
 		active_users: List[User] = await user_manager.get_active_users()

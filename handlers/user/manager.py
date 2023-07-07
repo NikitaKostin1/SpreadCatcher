@@ -185,12 +185,33 @@ async def subscription_expiration_date(user_id: int) -> Union[datetime, str, Non
 		subscription_term = subscription.term
 		subscription_begin_date = user.subscription_begin_date
 
-		expiration_date = subscription_begin_date + subscription_term
+		expiration_date: datetime = subscription_begin_date + subscription_term
 
 		return expiration_date
 	except Exception as e:
 		logger.error(f"{user}: {e}")
 		return None
+
+
+@logger.catch
+async def is_subscription_expired(user_id: int) -> bool:
+	current_time = datetime.now()
+	try:
+		user = await get_user(user_id)
+		if not user: return False
+
+		subscription_id = user.subscription_id
+		if not subscription_id: return False
+
+		if not user.subscription_begin_date: return False
+
+		subscription = Subscriptions.by_id(subscription_id)
+		if subscription is Subscriptions.unlimited: return False
+
+		return current_time > user.subscription_begin_date + subscription.term
+	except Exception as e:
+		logger.error(f"{user_id}: {e}")
+		return False
 
 
 @logger.catch
@@ -219,7 +240,7 @@ async def is_tester_expired(user_id: int) -> bool:
 		if user.test_begin_date is None:
 			return False
 
-		return user.test_begin_date + Subscriptions.tester.term < current_time
+		return current_time > user.test_begin_date + Subscriptions.tester.term
 	except Exception as e:
 		logger.error(f"{user_id}: {e}")
 		return False

@@ -13,3 +13,7 @@ access_given = """
 access_zeroed = """
 <code>{user_id}</code> | @{username} доступ обнулён
 """
+
+subscription_expired = """
+<code>{user_id}</code> | @{username} подписка {subscription_title} подошла к концу
+"""

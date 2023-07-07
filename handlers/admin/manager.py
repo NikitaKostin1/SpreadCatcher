@@ -76,9 +76,39 @@ async def set_tester_as_expired(user_id: int) -> bool:
 	"""
 	try:
 		connection = await get_conn()
-		user = await db.set_tester_as_expired(connection, user_id)
+		success = await db.set_tester_as_expired(connection, user_id)
 
-		return True
+		return success
+	except Exception as e:
+		logger.error(f"{user_id}: {e}")
+		return False
+
+
+@logger.catch
+async def get_users_with_non_tester_subscription() -> List[User]:
+	"""
+	Retrieve a list of users with non-tester subscription from the database
+	"""
+	try:
+		connection = await get_conn()
+		users = await db.get_users_with_non_tester_subscription(connection)
+
+		return users
+	except Exception as e:
+		logger.error(e)
+		return list()
+
+
+@logger.catch
+async def set_subscription_as_expired(user_id: int) -> bool:
+	"""
+	Sets the subscription as expired for a user.
+	"""
+	try:
+		connection = await get_conn()
+		success = await db.set_subscription_as_expired(connection, user_id)
+
+		return success
 	except Exception as e:
 		logger.error(f"{user_id}: {e}")
 		return False

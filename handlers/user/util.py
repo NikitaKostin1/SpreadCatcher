@@ -100,10 +100,16 @@ async def determine_reply_markup(user_id: int) -> ReplyKeyboardMarkup:
 	"""
 	if await manager.is_tester(user_id):
 		return rkb.tester
-	elif await manager.is_subscription_active(user_id):
+
+	if await manager.is_subscription_active(user_id):
+		if await manager.is_subscription_expired(user_id):
+			return rkb.subscription_expired
 		return rkb.active_subscription
-	elif await manager.is_tester_expired(user_id):
-		return rkb.tester_expired
+
+	if await manager.is_tester_expired(user_id):
+		return rkb.subscription_expired
+	if await manager.is_subscription_expired(user_id):
+			return rkb.subscription_expired
 
 	return rkb.new_user
 
