@@ -1,8 +1,11 @@
 from dataclasses import dataclass, field
 from typing import Union, List, Tuple
+from config import logger
 
 from .input_error import InputError
 from assets.texts import user as txt
+
+import asyncio
 
 
 
@@ -18,6 +21,7 @@ class Parameter:
 		self.value = self._validate_value(self.value)
 
 
+	@logger.catch
 	def _validate_value(self, value):
 		"""
 		Validates the assigned value for the parameter.
@@ -61,7 +65,19 @@ class Banks(Parameter):
 		"QIWI", "Tinkoff", "YandexMoney",
 		"Payeer", "AdvCash", "Sberbank",
 		"SBP", "Alfa-bank", "RaiffeisenBank",
-		"RosBank"
+		"RosBank", "Belarusbank", "Bank_Transfer",
+		"Technobank", "MTBank", "Wise", "Skrill",
+		"AirTM", "PerfectMoney", "PayPal", 
+		"Revolut", "Ziraat", "Garanti",
+		"KuveytTurk", "Papara", "DenizBank",
+		"QNB", "VakifBank", "ISBank", 
+		"Akbank", "Uzcard", "Humo", 
+		"UzbekNational", "PayMe", "KapitalBank",
+		"PrivatBank", "Monobank", "RaiffeisenBankAval",
+		"A-Bank", "Izibank", "Sepa_Transfer", 
+		"Sepa_Instant", "Halyk", "HomeCreditKz",
+		"Eurasian", "Jysan", "Kaspi", "CenterCredit",
+		"Forte"
 	])
 
 @dataclass
@@ -106,7 +122,8 @@ class Fiat(Parameter):
 	value: str
 	title: str = "fiat"
 	available_values: List[str] = field(default_factory=lambda: [
-		"RUB"
+		"RUB", "EUR", "USD", "GBP",
+		"UAH", "BYN", "KZT", "TRY"
 	])
 
 @dataclass
@@ -160,7 +177,8 @@ class Parametres:
 
 
 
-@dataclass(order=True)
+
+@dataclass()
 class StandardParametres(Parametres):
 	"""
 	Parameter settings that a user has before manual changes.
@@ -203,6 +221,7 @@ class TesterParametresChecker:
 		self.args = args
 
 
+	@logger.catch
 	def check(self) -> Union[Parameter, InputError]:
 		"""
 		Check if the parameter values match the Tester subscription restrictions.

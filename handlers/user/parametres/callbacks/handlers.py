@@ -2,12 +2,17 @@ from aiogram import types
 
 from create_bot import bot
 from config import logger
+from database import parametres as db
 
 from ... import manager
 from .. import util
 from entities import (
 	MainMessage, AdditionalMessage,
 	User, Parametres
+)
+from entities.parametres import (
+	Banks, Markets, BidType, AskType,
+	Currencies, Fiat
 )
 
 from assets import texts as txt
@@ -34,10 +39,10 @@ async def banks(callback: types.CallbackQuery):
 
 	message_markup = message.reply_markup
 	chosen_banks: list = util.get_markup_chosen_values(message_markup)
+	fiat: Fiat = await manager.get_parameter(user_id, Fiat)
 
 	if button_value == "complete":
-		BanksType = Parametres.get_annotations()["banks"]
-		new_param = BanksType(chosen_banks)
+		new_param = Banks(chosen_banks)
 
 		await util.save_parameter(user_id, new_param)
 		return
@@ -53,7 +58,7 @@ async def banks(callback: types.CallbackQuery):
 		chosen_banks.append(bank)
 
 
-	markup = ikb.parametres_banks
+	markup = await ikb.get_parametres_banks(fiat)
 	edited_markup = util.mark_markup_chosen_buttons(
 		dict(markup).copy(), chosen_banks
 	)
@@ -86,10 +91,9 @@ async def currencies(callback: types.CallbackQuery):
 
 
 	if button_value == "complete":
-		CurrenciesType = Parametres.get_annotations()["currencies"]
-		new_param = CurrenciesType(chosen_currencies)
+		currencies = Currencies(chosen_currencies)
 
-		await util.save_parameter(user_id, new_param)
+		await util.save_parameter(user_id, currencies)
 		return
 	else:
 		currency = button_value
@@ -137,10 +141,9 @@ async def markets(callback: types.CallbackQuery):
 
 
 	if button_value == "complete":
-		MarketsType = Parametres.get_annotations()["markets"]
-		new_param = MarketsType(chosen_markets)
+		markets = Markets(chosen_markets)
 
-		await util.save_parameter(user_id, new_param)
+		await util.save_parameter(user_id, markets)
 		return
 	else:
 		market = button_value
@@ -187,13 +190,11 @@ async def trading_type(callback: types.CallbackQuery):
 	chosen_bid_type, chosen_ask_type = chosen_trading_type.split("-")
 
 	if button_value == "complete":
-		BidType = Parametres.get_annotations()["bid_type"]
-		AskType = Parametres.get_annotations()["ask_type"]
-		new_bid_param = BidType(chosen_bid_type)
-		new_ask_param = AskType(chosen_ask_type)
+		bid_type = BidType(chosen_bid_type)
+		ask_type = AskType(chosen_ask_type)
 
-		await util.save_parameter(user_id, new_bid_param)
-		await util.save_parameter(user_id, new_ask_param)
+		await util.save_parameter(user_id, bid_type)
+		await util.save_parameter(user_id, ask_type)
 		return
 	else:
 		trading_type = button_value
@@ -228,24 +229,27 @@ async def fiat(callback: types.CallbackQuery):
 		return
 
 	message_markup = message.reply_markup
-	chosen_fiat: list = util.get_markup_chosen_values(message_markup)[0]
+	chosen_fiat: str = util.get_markup_chosen_values(message_markup)[0]
 
 	if button_value == "complete":
-		FiatType = Parametres.get_annotations()["fiat"]
-		new_param = FiatType(chosen_fiat)
+		fiat = Fiat(chosen_fiat)
+		await util.save_parameter(user_id, fiat)
 
-		await util.save_parameter(user_id, new_param)
+		available_banks: Banks = await db.get_banks_by_fiat(fiat)
+		await util.save_parameter(user_id, available_banks)
+
 		return
 	else:
-		fiat = button_value
+		fiat = Fiat(button_value)
 
+	# markup = await ikb.get_parametres_banks(fiat)
 	markup = ikb.parametres_fiat
 	edited_markup = util.mark_markup_chosen_buttons(
-		dict(markup).copy(), fiat
+		dict(markup).copy(), fiat.value
 	)
 
 
-	message_text = txt.fiat_info.format(fiat=fiat)
+	message_text = txt.fiat_info.format(fiat=fiat.value)
 	msg = await AdditionalMessage.edit(
 		user_id, message_text,
 		reply_markup=edited_markup

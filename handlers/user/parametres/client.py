@@ -2,6 +2,7 @@ from aiogram import types
 
 from create_bot import bot
 from config import logger
+from database import parametres as db
 
 from .. import manager
 from . import util
@@ -11,6 +12,10 @@ from entities import (
 )
 from entities.states import (
 	Limits, Spread
+)
+from entities.parametres import (
+	Banks, Markets, BidType, AskType,
+	Currencies, Fiat, SignalsType
 )
 from assets import texts as txt
 from keyboards.user import (
@@ -28,7 +33,6 @@ async def menu(callback: types.CallbackQuery):
 	user_id = callback["message"]["chat"]["id"]
 	await MainMessage.delete(user_id)
 
-	SignalsType = Parametres.get_annotations()["signals_type"]
 	signals_type = SignalsType("p2p")
 
 	await util.save_parameter(user_id, signals_type)
@@ -86,14 +90,21 @@ async def banks(callback: types.CallbackQuery):
 	await callback.answer()
 	await MainMessage.edit(user_id, await util.parametres_text(user_id))
 
-	BanksType = Parametres.get_annotations()["banks"]
-	banks = await manager.get_parameter(user_id, BanksType)
+	fiat: Fiat = await manager.get_parameter(user_id, Fiat)
+	banks: Banks = await manager.get_parameter(user_id, Banks)
 
-	if not banks:
+	if not banks or not fiat:
 		await callback.answer(txt.error)
 		return
 
-	markup = ikb.parametres_banks
+	available_banks: Banks = await db.get_banks_by_fiat(fiat)
+	for bank in banks.value:
+		if bank not in available_banks.value:
+			await util.save_parameter(user_id, available_banks)
+			banks = await manager.get_parameter(user_id, Banks)
+			break
+
+	markup = await ikb.get_parametres_banks(fiat)
 	edited_markup = util.mark_markup_chosen_buttons(
 		dict(markup).copy(), banks.value
 	)
@@ -123,8 +134,7 @@ async def currencies(callback: types.CallbackQuery):
 	await callback.answer()
 	await MainMessage.edit(user_id, await util.parametres_text(user_id))
 
-	CurrenciesType = Parametres.get_annotations()["currencies"]
-	currencies = await manager.get_parameter(user_id, CurrenciesType)
+	currencies = await manager.get_parameter(user_id, Currencies)
 
 	if not currencies:
 		await callback.answer(txt.error)
@@ -160,8 +170,7 @@ async def markets(callback: types.CallbackQuery):
 	await callback.answer()
 	await MainMessage.edit(user_id, await util.parametres_text(user_id))
 
-	MarketsType = Parametres.get_annotations()["markets"]
-	markets = await manager.get_parameter(user_id, MarketsType)
+	markets = await manager.get_parameter(user_id, Markets)
 
 	if not markets:
 		await callback.answer(txt.error)
@@ -215,8 +224,6 @@ async def trading_type(callback: types.CallbackQuery):
 	await callback.answer()
 	await MainMessage.edit(user_id, await util.parametres_text(user_id))
 
-	BidType = Parametres.get_annotations()["bid_type"]
-	AskType = Parametres.get_annotations()["ask_type"]
 	bid_type = await manager.get_parameter(user_id, BidType)
 	ask_type = await manager.get_parameter(user_id, AskType)
 
@@ -250,8 +257,7 @@ async def fiat(callback: types.CallbackQuery):
 	await callback.answer()
 	await MainMessage.edit(user_id, await util.parametres_text(user_id))
 
-	FiatType = Parametres.get_annotations()["fiat"]
-	fiat = await manager.get_parameter(user_id, FiatType)
+	fiat = await manager.get_parameter(user_id, Fiat)
 
 	if not fiat:
 		await callback.answer(txt.error)

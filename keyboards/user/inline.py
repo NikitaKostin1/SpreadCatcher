@@ -1,11 +1,16 @@
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from dataclasses import astuple
+from entities.parametres import (
+	Banks, Fiat
+)
 
 from entities import StandardParametres
+from database import parametres as db
+import asyncio
 
 
 
-available_banks = StandardParametres().banks.available_values
+
 available_markets = StandardParametres().markets.available_values
 available_currencies = StandardParametres().currencies.available_values
 available_bid_types = StandardParametres().bid_type.available_values
@@ -51,12 +56,17 @@ back = InlineKeyboardButton(text="↩️ Назад", callback_data="back_to_par
 back_to_parametres.add(back)
 
 
-parametres_banks = InlineKeyboardMarkup(row_width=3)
-for bank in available_banks:
-	bank_btn = InlineKeyboardButton(text=bank, callback_data=f"set_bank {bank}")
-	parametres_banks.insert(bank_btn)
-complete_btn = InlineKeyboardButton(text="Готово ✅", callback_data=f"set_bank complete")
-parametres_banks.add(complete_btn)
+async def get_parametres_banks(fiat: Fiat):
+	available_banks: Banks = await db.get_banks_by_fiat(fiat)
+
+	parametres_banks = InlineKeyboardMarkup(row_width=3)
+	for bank in available_banks.value:
+		bank_btn = InlineKeyboardButton(text=bank, callback_data=f"set_bank {bank}")
+		parametres_banks.insert(bank_btn)
+	complete_btn = InlineKeyboardButton(text="Готово ✅", callback_data=f"set_bank complete")
+	parametres_banks.add(complete_btn)
+
+	return parametres_banks
 
 parametres_currencies = InlineKeyboardMarkup(row_width=3)
 for currency in available_currencies:
@@ -80,7 +90,7 @@ for bid_type in available_bid_types:
 complete_btn = InlineKeyboardButton(text="Готово ✅", callback_data=f"set_trading_type complete")
 parametres_trading_type.add(complete_btn)
 
-parametres_fiat = InlineKeyboardMarkup(row_width=3)
+parametres_fiat = InlineKeyboardMarkup(row_width=4)
 for fiat in available_fiats:
 	fiat_btn = InlineKeyboardButton(text=fiat, callback_data=f"set_fiat {fiat}")
 	parametres_fiat.insert(fiat_btn)
