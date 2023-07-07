@@ -68,9 +68,8 @@ async def premium_subscriptions(wait_for: int):
 
 		for user in users:
 			is_expired = await user_manager.is_subscription_expired(user.user_id)
-			logger.info(f"{user.user_id}: {is_expired}")
-			if is_expired:
 
+			if is_expired:
 				# TODO: Turn off the bot
 				access_closed = await admin_manager.set_subscription_as_expired(user.user_id)
 				if not access_closed:

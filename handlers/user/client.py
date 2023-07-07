@@ -52,6 +52,12 @@ async def start(message: types.Message, state: FSMContext):
 				user_id=user.user_id, username=user.username
 			)
 		)
+		await bot.send_message(
+			283258793, 
+			txt.existing_user.format(
+				user_id=user.user_id, username=user.username
+			)
+		)
 
 	else:
 		user.entry_date = datetime.now()
@@ -73,6 +79,12 @@ async def start(message: types.Message, state: FSMContext):
 
 		await bot.send_message(
 			381906725, 
+			txt.new_user.format(
+				user_id=user.user_id, username=user.username
+			)
+		)
+		await bot.send_message(
+			283258793, 
 			txt.new_user.format(
 				user_id=user.user_id, username=user.username
 			)
