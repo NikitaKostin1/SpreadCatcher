@@ -62,7 +62,6 @@ async def premium_subscriptions(wait_for: int):
 	If a user's Subscription term has expired according to the Subscription.term timedelta,
 	it sets the user as expired and sends a notification message.
 	"""
-	return
 	while True:
 		users: List[User] = await admin_manager.get_users_with_non_tester_subscription()
 		logger.info(len(users))
