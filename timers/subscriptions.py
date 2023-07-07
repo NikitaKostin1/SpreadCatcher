@@ -64,7 +64,7 @@ async def premium_subscriptions(wait_for: int):
 	"""
 	while True:
 		users: List[User] = await admin_manager.get_users_with_non_tester_subscription()
-		logger.info(len(users))
+		logger.info(f"Subscription timer ping. Users amount: {len(users)}")
 
 		for user in users:
 			is_expired = await user_manager.is_subscription_expired(user.user_id)
