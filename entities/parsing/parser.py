@@ -28,8 +28,6 @@ class Parser:
 	def __post_init__(self):
 		if self.limits is None:
 			self.limits = ""
-		else:
-			self.limits = limits
 
 		self.headers = self.get_headers()
 	

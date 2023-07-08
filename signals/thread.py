@@ -37,43 +37,48 @@ async def server(wait_for: int):
 		await asyncio.sleep(wait_for)
 		logger.success("Server ping")
 
-		active_users: List[User] = await user_manager.get_active_users()
-		logger.info(f"Active users amount: {len(active_users)}")
+		try:
+			active_users: List[User] = await user_manager.get_active_users()
+			logger.info(f"Active users amount: {len(active_users)}")
 
-		# Check if notified users turned off the bot
-		for user_id in notificated_users:
-			if not user_id in [user.user_id for user in active_users]:
-				notificated_users.remove(user_id)
+			# Check if notified users turned off the bot
+			for user_id in notificated_users:
+				if not user_id in [user.user_id for user in active_users]:
+					notificated_users.remove(user_id)
 
-		for user in active_users:
-			user_id = user.user_id
+			for user in active_users:
+				user_id = user.user_id
 
-			parametres: Parametres = await user_manager.get_user_parametres(user_id)
+				parametres: Parametres = await user_manager.get_user_parametres(user_id)
 
-			if not parametres:
-				logger.error(f"No parametres: {user_id}")
-				continue
+				if not parametres:
+					logger.error(f"No parametres: {user_id}")
+					continue
 
-			user_sent_signals = 0
-			if signals.get(user_id):
-				former_signals = signals[user_id]
-			else:
-				former_signals = tuple()
+				user_sent_signals = 0
+				if signals.get(user_id):
+					former_signals = signals[user_id]
+				else:
+					former_signals = tuple()
 
-			for currency in parametres.currencies.value:
-				parsers_responses = await manager.gather_parsers_responses(
-					currency, parametres
-				)
+				for currency in parametres.currencies.value:
+					parsers_responses = await manager.gather_parsers_responses(
+						currency, parametres
+					)
 
-				sent_signals: Tuple[Signal] = await manager.iterate_advertisments(
-					user_id, parametres, parsers_responses, former_signals
-				)
-				user_sent_signals += len(sent_signals)
+					sent_signals: Tuple[Signal] = await manager.iterate_advertisments(
+						user_id, parametres, parsers_responses, former_signals
+					)
+					user_sent_signals += len(sent_signals)
 
-			# Notification about inefficient parametres
-			if user_sent_signals < min_acceptable_signals_amount and \
-								not user_id in notificated_users:
-				await manager.notificate_user(user_id)
-				notificated_users.append(user_id)
+				# Notification about inefficient parametres
+				if user_sent_signals < min_acceptable_signals_amount and \
+									not user_id in notificated_users:
+					await manager.notificate_user(user_id)
+					notificated_users.append(user_id)
 
-			signals[user_id] = sent_signals
+				signals[user_id] = sent_signals
+
+		except Exception as e:
+			logger.error(f"Signals thread crashed: {e}")
+			continue
