@@ -166,17 +166,6 @@ class Parametres:
 			super().__setattr__(name, FieldAnnotation(value))
 
 
-	def get_annotations():
-		"""
-		Get the annotations of the `Parametres` class.
-
-		Returns:
-			dict: A dictionary containing the field names as keys and their corresponding annotations as values.
-		"""
-		return Parametres.__annotations__
-
-
-
 
 @dataclass()
 class StandardParametres(Parametres):
