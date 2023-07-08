@@ -25,6 +25,12 @@ CREATE TABLE users_parametres (
 	signals_type	VARCHAR(8)	NOT NULL
 );
 
+
+CREATE TABLE available_markets (
+	title	TEXT 	NOT NULL UNIQUE,
+	p2p		BOOLEAN NOT NULL,
+	spot	BOOLEAN NOT NULL
+);
 -- Import data from supported_banks.csv
 /*
 COPY supported_banks(fiat, bank, supported_markets, fiat_symbol)
