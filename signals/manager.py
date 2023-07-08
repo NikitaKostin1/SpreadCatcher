@@ -129,6 +129,8 @@ async def send_signal(
 
 		if former_spread == spread:
 			return former_signals[signal_index]
+	else:  # Debugging
+		former_spread = None
 
 	if fiats_symbols.get(parametres.fiat.value):
 		fiat_symbol = fiats_symbols[parametres.fiat.value]
@@ -163,13 +165,18 @@ async def send_signal(
 			)
 		else:
 			message_id = former_signals[signal_index].message_id
-			msg = await bot.edit_message_text(
-				chat_id=user_id,
-				message_id=message_id,
-				text=text,
-				reply_markup=markup,
-				disable_web_page_preview=True
-			)
+			try:
+				msg = await bot.edit_message_text(
+					chat_id=user_id,
+					message_id=message_id,
+					text=text,
+					reply_markup=markup,
+					disable_web_page_preview=True
+				)
+			except Exception as e:
+				logger.error(e)
+				logger.info(f"{signal_index=} {len(former_signals)=} {former_spread=} {spread=}")
+
 	except BotBlocked:
 		await user_manager.disable_bot(user_id)
 		return None
