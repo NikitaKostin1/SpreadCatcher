@@ -37,9 +37,9 @@ class Parameter:
 		"""
 		if isinstance(self, (Banks, Markets, Currencies)):
 			if isinstance(value, str):
-				return value.split()
+				value = value.split()
 		elif isinstance(self, Spread):
-			return round(value, 2)
+			value = round(value, 2)
 
 		available_values = getattr(self, "available_values", None)
 		if available_values and isinstance(value, list):
@@ -167,7 +167,7 @@ class Parametres:
 
 
 
-@dataclass()
+@dataclass(order=True)
 class StandardParametres(Parametres):
 	"""
 	Parameter settings that a user has before manual changes.
