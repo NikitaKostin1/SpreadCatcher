@@ -30,18 +30,19 @@ class MessageHandler:
 
 		user_id = message["chat"]["id"]
 
-		if not text:
-			text = message["text"]
-
 		if user_id in self.storage:
 			if self.storage[user_id]:
-				former_message = self.storage[user_id]
+				former_message: types.Message = self.storage[user_id]
+
+				if not text:
+					text = former_message["text"]
+
 				try:
 					await former_message.edit_text(
 						text=text,
 						reply_markup=reply_markup
 					)
-				except:
+				except MessageNotModified:
 					pass
 
 		self.storage[user_id] = message
