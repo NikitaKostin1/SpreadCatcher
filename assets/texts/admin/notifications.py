@@ -15,5 +15,5 @@ access_zeroed = """
 """
 
 subscription_expired = """
-<code>{user_id}</code> | @{username} подписка {subscription_title} подошла к концу
+<code>{user_id}</code> | @{username} подписка <b>{subscription_title}</b> подошла к концу
 """

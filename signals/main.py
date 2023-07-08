@@ -17,7 +17,7 @@ def start_server():
 
 	loop = asyncio.get_event_loop()
 	server_thread = threading.Thread(
-		target=asynchronous_start, args=(120, loop)
+		target=asynchronous_start, args=(90, loop)
 	)
 	server_thread.daemon = True
 	server_thread.start()

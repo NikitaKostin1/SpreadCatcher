@@ -127,7 +127,7 @@ async def send_signal(
 		former_ask_price = former_signals[signal_index].ask.conditions.price
 		former_spread = round((1 - former_bid_price / former_ask_price) * 100, 2)
 
-		if former_spread >= spread:
+		if former_spread == spread:
 			return former_signals[signal_index]
 
 	if fiats_symbols.get(parametres.fiat.value):
