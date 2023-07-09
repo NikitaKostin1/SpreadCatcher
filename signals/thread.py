@@ -55,7 +55,7 @@ async def server(wait_for: int):
 					logger.error(f"No parametres: {user_id}")
 					continue
 
-				user_sent_signals = 0
+				total_sent_signals = tuple()
 				if signals.get(user_id):
 					former_signals = signals[user_id]
 				else:
@@ -69,18 +69,18 @@ async def server(wait_for: int):
 					sent_signals: Tuple[Signal] = await manager.iterate_advertisments(
 						user_id, parametres, parsers_responses, former_signals
 					)
-					user_sent_signals += len(sent_signals)
+					total_sent_signals += sent_signals
 
 				# Notification about inefficient parametres
-				if user_sent_signals < min_acceptable_signals_amount and \
+				if len(total_sent_signals) < min_acceptable_signals_amount and \
 									not user_id in notificated_users:
 					await manager.notificate_user(user_id)
 					notificated_users.append(user_id)
 
-				if sent_signals:
-					signals[user_id] = sent_signals
+				if total_sent_signals:
+					signals[user_id] = total_sent_signals
 
-				logger.info(f"{user_id} | {user.username} Sent signals: {len(sent_signals)}")
+				logger.info(f"{user_id} | {user.username} Sent signals: {len(total_sent_signals)}")
 
 		except Exception as e:
 			logger.error(f"Signals thread crashed: {e}")
