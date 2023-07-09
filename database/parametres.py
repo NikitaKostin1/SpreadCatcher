@@ -1,15 +1,8 @@
-from asyncpg.connection import Connection
-from datetime import datetime, timedelta
-from typing import Union, Tuple
 from config import logger, get_conn
 
-from entities import (
-	User
-)
 from entities.parametres import (
 	Banks, Fiat
 )
-
 
 
 
@@ -19,12 +12,12 @@ async def get_banks_by_fiat(fiat: Fiat) -> Banks:
 	Retrieve a list of banks that support the specified fiat currency.
 
 	Args:
-		fiat (str): The fiat currency.
+		fiat (Fiat): The Fiat currency.
 
 	Returns:
-		list: A list of banks that support the specified fiat currency.
+		Banks: A Banks object containing the list banks.
 	"""
-	banks = Banks([])
+	banks = list()
 	connection = await get_conn()
 
 	records = await connection.fetch(f"""
@@ -35,9 +28,9 @@ async def get_banks_by_fiat(fiat: Fiat) -> Banks:
 
 	for record in records:
 		bank = record.get("bank")
-		banks.value.append(bank)
+		banks.append(bank)
 
-	return banks
+	return Banks(banks)
 
 
 
@@ -64,4 +57,4 @@ async def fiats_symbols() -> dict:
 		if not symbols.get(fiat):
 			symbols[fiat] = symbol
 
-	return symbols		
+	return symbols

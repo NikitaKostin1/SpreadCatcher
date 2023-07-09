@@ -1,6 +1,6 @@
 from aiogram.types import InlineKeyboardMarkup
 from aiogram.utils.exceptions import (
-	BotBlocked, ChatNotFound
+	BotBlocked, ChatNotFound, MessageToEditNotFound
 )
 
 from handlers.user import manager as user_manager
@@ -161,15 +161,13 @@ async def send_signal(
 
 	try:
 		if signal_index >= len(former_signals):
-			try:
-				msg = await bot.send_message(
-					chat_id=user_id, 
-					text=text, 
-					reply_markup=markup,
-					disable_web_page_preview=True
-				)
-			except ChatNotFound:
-				return None
+			msg = await bot.send_message(
+				chat_id=user_id, 
+				text=text, 
+				reply_markup=markup,
+				disable_web_page_preview=True
+			)
+
 		else:
 			message_id = former_signals[signal_index].message_id
 			try:
@@ -184,10 +182,18 @@ async def send_signal(
 				logger.error(e)
 				logger.info(f"{signal_index=} {len(former_signals)=} {former_spread=} {spread=}")
 				msg = former_signals[signal_index]
+				bid = former_signals[signal_index].bid
+				ask = former_signals[signal_index].ask
 
 	except BotBlocked:
 		await user_manager.disable_bot(user_id)
 		return None
+	except ChatNotFound:
+		return None
+	except MessageToEditNotFound:
+		msg = former_signals[signal_index]
+		bid = former_signals[signal_index].bid
+		ask = former_signals[signal_index].ask
 
 	signal = Signal(
 		message_id=msg.message_id,
@@ -269,7 +275,7 @@ async def iterate_advertisments(
 			if signal:
 				sent_signals.append(signal)
 
-			await asyncio.sleep(0.4)
+			await asyncio.sleep(0.3)
 
 	return tuple(sent_signals)
 

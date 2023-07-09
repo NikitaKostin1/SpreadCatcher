@@ -7,8 +7,7 @@ from entities import (
 	User, StandardParametres,
 	Parametres, Parameter
 )
-# TODO: rewrite for Connection.fetchval method
-# TODO: Read about Connection.prepare coroutine
+
 
 
 @logger.catch
@@ -96,10 +95,10 @@ async def get_parameter(connection: Connection, user_id: int, ParameterType: Par
 		Parameter: The value of the parameter for the user, or None if it doesn't exist.
 	"""
 	try:
-		record = await connection.fetchrow(f"""
+		value = await connection.fetchval(f"""
 			SELECT {ParameterType.title} FROM users_parametres WHERE user_id = {user_id};
 		""")
-		param = ParameterType(record.get(ParameterType.title))
+		param = ParameterType(value)
 
 		return param
 	except Exception as e:
