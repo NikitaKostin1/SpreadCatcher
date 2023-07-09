@@ -6,8 +6,6 @@ from entities.parametres import (
 
 from entities import StandardParametres
 from database import parametres as db
-import asyncio
-
 
 
 
@@ -56,7 +54,7 @@ back = InlineKeyboardButton(text="↩️ Назад", callback_data="back_to_par
 back_to_parametres.add(back)
 
 
-async def get_parametres_banks(fiat: Fiat):
+async def get_parametres_banks(fiat: Fiat) -> InlineKeyboardMarkup:
 	available_banks: Banks = await db.get_banks_by_fiat(fiat)
 
 	parametres_banks = InlineKeyboardMarkup(row_width=3)
@@ -67,6 +65,7 @@ async def get_parametres_banks(fiat: Fiat):
 	parametres_banks.add(complete_btn)
 
 	return parametres_banks
+
 
 parametres_currencies = InlineKeyboardMarkup(row_width=3)
 for currency in available_currencies:

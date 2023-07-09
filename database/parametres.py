@@ -30,6 +30,9 @@ async def get_banks_by_fiat(fiat: Fiat) -> Banks:
 		bank = record.get("bank")
 		banks.append(bank)
 
+	if not banks:
+		logger.error(f"None banks fetched: {fiat=}")
+
 	return Banks(banks)
 
 

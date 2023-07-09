@@ -78,7 +78,7 @@ class Banks(Parameter):
 		"Sepa_Instant", "Halyk", "HomeCreditKz",
 		"Eurasian", "Jysan", "Kaspi", "CenterCredit",
 		"Forte"
-	])
+	])  # TODO: move to databse
 
 @dataclass
 class Markets(Parameter):
@@ -86,7 +86,7 @@ class Markets(Parameter):
 	title: str = "markets"
 	available_values: List[str] = field(default_factory=lambda: [
 		"Binance", "Huobi", "Bybit", "OKX", "PexPay"
-	])
+	])  # TODO: move to databse
 
 @dataclass
 class Spread(Parameter):
@@ -99,7 +99,7 @@ class BidType(Parameter):
 	title: str = "bid_type"
 	available_values: List[str] = field(default_factory=lambda: [
 		"Taker", "Maker"
-	])
+	])  # TODO: move to databse
 
 @dataclass
 class AskType(Parameter):
@@ -107,7 +107,7 @@ class AskType(Parameter):
 	title: str = "ask_type"
 	available_values: List[str] = field(default_factory=lambda: [
 		"Maker", "Taker"
-	])
+	])  # TODO: move to databse
 
 @dataclass
 class Currencies(Parameter):
@@ -115,7 +115,7 @@ class Currencies(Parameter):
 	title: str = "currencies"
 	available_values: List[str] = field(default_factory=lambda: [
 		"USDT", "BTC", "ETH"
-	])
+	])  # TODO: move to databse
 
 @dataclass
 class Fiat(Parameter):
@@ -124,7 +124,7 @@ class Fiat(Parameter):
 	available_values: List[str] = field(default_factory=lambda: [
 		"RUB", "EUR", "USD", "GBP",
 		"UAH", "BYN", "KZT", "TRY"
-	])
+	])  # TODO: move to databse
 
 @dataclass
 class SignalsType(Parameter):
@@ -132,7 +132,7 @@ class SignalsType(Parameter):
 	title: str = "signals_type"
 	available_values: list = field(default_factory=lambda: [
 		"p2p"
-	])
+	])  # TODO: move to databse
 
 
 
@@ -187,16 +187,16 @@ class StandardParametres(Parametres):
 		"Payeer", "AdvCash", "Sberbank",
 		"SBP", "Alfa-bank", "RaiffeisenBank",
 		"RosBank"
-	]))
+	]))  # TODO: move to databse
 	markets: Markets = field(default_factory=lambda: Markets([
 		"Binance", "Huobi", "Bybit", "OKX", "PexPay"
-	]))
+	]))  # TODO: move to databse
 	spread: Spread = Spread(1.0)
 	bid_type: BidType = BidType("Taker")
 	ask_type: AskType = AskType("Maker")
 	currencies: Currencies = field(default_factory=lambda: Currencies([
 		"USDT", "BTC", "ETH"
-	]))
+	]))  # TODO: move to databse
 	fiat: Fiat = Fiat("RUB")
 	signals_type: SignalsType = SignalsType("p2p")
 
