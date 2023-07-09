@@ -130,7 +130,6 @@ async def give_access(message: types.Message):
 		pass
 
 
-
 @logger.catch
 async def reset_access(message: types.Message):
 	"""
@@ -191,3 +190,31 @@ async def reset_access(message: types.Message):
 		txt.access_zeroed_,
 		reply_markup=rkb.new_user
 	)
+
+
+@logger.catch
+async def clear_signals(message: types.Message):
+	"""
+	Deletes all signal messages at every user
+	and cleans signals storage
+	"""
+	from signals.thread import signals as storage
+
+	for user_id in storage:
+		signals = storage[user_id]
+		deleted_amount = 0
+
+		for signal in signals:
+			try:
+				await bot.delete_message(
+					chat_id=user_id, 
+					message_id=signal.message_id
+				)
+				deleted_amount += 1
+			except:
+				pass
+
+		logger.success(f"{user_id}: Deleted {deleted_amount}/{len(signals)}")
+		storage[user_id] = tuple()
+
+
