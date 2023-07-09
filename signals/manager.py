@@ -183,6 +183,7 @@ async def send_signal(
 			except Exception as e:
 				logger.error(e)
 				logger.info(f"{signal_index=} {len(former_signals)=} {former_spread=} {spread=}")
+				msg = former_signals[signal_index]
 
 	except BotBlocked:
 		await user_manager.disable_bot(user_id)
