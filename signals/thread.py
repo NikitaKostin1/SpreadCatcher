@@ -77,7 +77,10 @@ async def server(wait_for: int):
 					await manager.notificate_user(user_id)
 					notificated_users.append(user_id)
 
-				signals[user_id] = sent_signals
+				if sent_signals:
+					signals[user_id] = sent_signals
+
+				logger.info(f"{user_id} | {user.username} Sent signals: {len(sent_signals)}")
 
 		except Exception as e:
 			logger.error(f"Signals thread crashed: {e}")
