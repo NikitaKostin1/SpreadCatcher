@@ -12,6 +12,9 @@ from entities import (
 	MainMessage, AdditionalMessage,
 	Parametres, Parameter, InputError
 )
+from entities.parametres import (
+	Limits, Spread
+)
 from assets import texts as txt
 from keyboards.user import (
 	inline as ikb
@@ -38,15 +41,10 @@ async def limits(message: types.Message, state: FSMContext):
 		await AdditionalMessage.acquire(msg)
 		return
 	else:
-		limits = result
+		limits = Limits(result)
 
 	await state.finish()
-
-	LimitsType = Parametres.get_annotations()["limits"]
-	new_param = LimitsType(limits)
-
-	await util.save_parameter(user_id, new_param)
-
+	await util.save_parameter(user_id, limits)
 
 
 @logger.catch
@@ -67,11 +65,7 @@ async def spread(message: types.Message, state: FSMContext):
 		await AdditionalMessage.acquire(msg)
 		return
 	else:
-		spread = result
+		spread = Spread(result)
 
 	await state.finish()
-
-	SpreadType = Parametres.get_annotations()["spread"]
-	new_param = SpreadType(spread)
-
-	await util.save_parameter(user_id, new_param)
+	await util.save_parameter(user_id, spread)

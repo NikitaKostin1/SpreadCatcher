@@ -7,6 +7,9 @@ from entities import (
 	AdditionalMessage, InputError,
 	Parametres, TesterParametresChecker
 )
+from entities.parametres import (
+	Spread
+)
 from assets import texts as txt
 from keyboards.user import (
 	inline as ikb
@@ -50,8 +53,7 @@ async def spread(user_id: int, user_input: str) -> Union[float, InputError]:
 	except:
 		return InputError(message=txt.spread_type_error)
 
-	SpreadType = Parametres.get_annotations()["spread"]
-	spread = SpreadType(spread)
+	spread = Spread(spread)
 
 	is_tester = await manager.is_tester(user_id)
 	if is_tester:
