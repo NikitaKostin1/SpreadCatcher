@@ -1,6 +1,7 @@
 from aiogram.types import InlineKeyboardMarkup
 from aiogram.utils.exceptions import (
-	BotBlocked, ChatNotFound, MessageToEditNotFound
+	BotBlocked, ChatNotFound, 
+	MessageToEditNotFound, MessageNotModified
 )
 
 from handlers.user import manager as user_manager
@@ -145,8 +146,8 @@ async def send_signal(
 		bid_market=bid.market,
 		ask_market=ask.market,
 		currency=bid.conditions.currency,
-		bid_price=f"{bid.conditions.price:,.2f}",
-		ask_price=f"{ask.conditions.price:,.2f}",
+		bid_price=f"{bid_price:,.2f}",
+		ask_price=f"{ask_price:,.2f}",
 		spread=spread,
 		bid_limits_min=f"{bid.conditions.limits_min:,}",
 		bid_limits_max=f"{bid.conditions.limits_max:,}",
@@ -170,27 +171,20 @@ async def send_signal(
 
 		else:
 			message_id = former_signals[signal_index].message_id
-			try:
-				msg = await bot.edit_message_text(
-					chat_id=user_id,
-					message_id=message_id,
-					text=text,
-					reply_markup=markup,
-					disable_web_page_preview=True
-				)
-			except Exception as e:
-				logger.error(e)
-				logger.info(f"{signal_index=} {len(former_signals)=} {former_spread=} {spread=}")
-				msg = former_signals[signal_index]
-				bid = former_signals[signal_index].bid
-				ask = former_signals[signal_index].ask
+			msg = await bot.edit_message_text(
+				chat_id=user_id,
+				message_id=message_id,
+				text=text,
+				reply_markup=markup,
+				disable_web_page_preview=True
+			)
 
 	except BotBlocked:
 		await user_manager.disable_bot(user_id)
 		return None
 	except ChatNotFound:
 		return None
-	except MessageToEditNotFound:
+	except (MessageToEditNotFound, MessageNotModified):
 		msg = former_signals[signal_index]
 		bid = former_signals[signal_index].bid
 		ask = former_signals[signal_index].ask
