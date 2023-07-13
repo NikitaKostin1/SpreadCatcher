@@ -1,7 +1,7 @@
 from config import logger, get_conn
 
 from entities.parametres import (
-	Banks, Fiat
+	Banks, Fiat, Markets
 )
 
 
@@ -61,3 +61,27 @@ async def fiats_symbols() -> dict:
 			symbols[fiat] = symbol
 
 	return symbols
+
+
+@logger.catch
+async def p2p_markets() -> Markets:
+	"""
+	Retrieve a list of only P2P markets from the database.
+
+	Returns:
+		Markets: A Markets object containing the list of P2P markets.
+	"""
+	markets = list()
+	connection = await get_conn()
+
+	records = await connection.fetch("""
+		SELECT title
+		FROM available_markets
+		WHERE 
+			p2p = true;
+	""")
+	for record in records:
+		market = record.get("title")
+		markets.append(market)
+
+	return Markets(markets)

@@ -33,7 +33,14 @@ async def menu(callback: types.CallbackQuery):
 	user_id = callback["message"]["chat"]["id"]
 	await MainMessage.delete(user_id)
 
+	former_signals_type: SignalsType = await manager.get_parameter(
+		user_id, SignalsType
+	)
 	signals_type = SignalsType("p2p")
+
+	if former_signals_type != signals_type:
+		markets: Markets = await db.p2p_markets()
+		await util.save_parameter(user_id, markets)
 
 	await util.save_parameter(user_id, signals_type)
 
