@@ -31,6 +31,11 @@ CREATE TABLE available_markets (
 	p2p		BOOLEAN NOT NULL,
 	spot	BOOLEAN NOT NULL
 );
+CREATE TABLE available_currencies (
+	title	TEXT 	NOT NULL UNIQUE,
+	p2p		BOOLEAN NOT NULL,
+	spot	BOOLEAN NOT NULL
+);
 -- Import data from supported_banks.csv
 /*
 COPY supported_banks(fiat, bank, supported_markets, fiat_symbol)

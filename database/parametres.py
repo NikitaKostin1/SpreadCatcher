@@ -85,3 +85,27 @@ async def p2p_markets() -> Markets:
 		markets.append(market)
 
 	return Markets(markets)
+
+
+@logger.catch
+async def p2p_currencies() -> Currencies:
+	"""
+	Retrieve a list of only P2P currencies from the database.
+
+	Returns:
+		Currencies: A Currencies object containing the list of currencies.
+	"""
+	currencies = list()
+	connection = await get_conn()
+
+	records = await connection.fetch("""
+		SELECT title
+		FROM available_currencies
+		WHERE 
+			p2p = true;
+	""")
+	for record in records:
+		currency = record.get("title")
+		currencies.append(currency)
+
+	return Currencies(currencies)
