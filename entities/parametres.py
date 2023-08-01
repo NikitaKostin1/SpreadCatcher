@@ -85,7 +85,14 @@ class Markets(Parameter):
 	value: List[str]
 	title: str = "markets"
 	available_values: List[str] = field(default_factory=lambda: [
-		"Binance", "Huobi", "Bybit", "OKX", "PexPay"
+		"Binance", "Huobi", "Bybit", "OKX", "PexPay",
+		'CoinBase', 'Crypto', 'Kuna.io', 'KuCoin',
+		'Gate.io', 'WhiteBit', 'Kraken', 'Bitfinex',
+		'mexc', 'Cryptology', 'Exmo', 'bitHumb',
+		'Liquid', 'Bittrex', 'Poloniex', 'BitMart',
+		'Bitrue', 'Bitstamp', 'XT.com', 'OKcoin',
+		'Phemex', 'Hotcoin', 'BTCEX', 'bigONE',
+		'coinW', 'ascendEX', 'BKEX', 'FMFW'
 	])  # TODO: move to databse
 
 @dataclass
@@ -114,7 +121,9 @@ class Currencies(Parameter):
 	value: List[str]
 	title: str = "currencies"
 	available_values: List[str] = field(default_factory=lambda: [
-		"USDT", "BTC", "ETH"
+		"USDT", "BTC", "ETH", "BNB",
+		"XRP", "USDC", "ADA", "SOL",
+		"MATIC", "LTC"
 	])  # TODO: move to databse
 
 @dataclass
@@ -131,7 +140,7 @@ class SignalsType(Parameter):
 	value: str
 	title: str = "signals_type"
 	available_values: list = field(default_factory=lambda: [
-		"p2p"
+		"p2p", "spot", "p2p_spot"
 	])  # TODO: move to databse
 
 
