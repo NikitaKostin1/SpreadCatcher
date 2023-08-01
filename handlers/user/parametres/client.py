@@ -40,7 +40,9 @@ async def menu(callback: types.CallbackQuery):
 
 	if former_signals_type != signals_type:
 		markets: Markets = await db.p2p_markets()
+		currencies: Currencies = await db.p2p_currencies()
 		await util.save_parameter(user_id, markets)
+		await util.save_parameter(user_id, currencies)
 
 	await util.save_parameter(user_id, signals_type)
 
