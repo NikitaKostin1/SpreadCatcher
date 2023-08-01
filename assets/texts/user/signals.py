@@ -33,6 +33,4 @@ ______________________________________
     ◀️ <b>Продажа</b> ◀️
     Лимиты: {ask_limits_min}{fiat_symbol} - {ask_limits_max}{fiat_symbol}
     Банк: {ask_bank}
-
-Активно ✅
 """

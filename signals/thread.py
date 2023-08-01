@@ -18,6 +18,7 @@ from entities import (
 # Dict with the tuple of signals sent to a user
 signals: Dict[int, Tuple[Signal]] = {}
 
+
 @logger.catch
 async def server(wait_for: int):
 	"""
@@ -28,7 +29,7 @@ async def server(wait_for: int):
 	"""
 
 	# List of user IDs that have been notified about inefficient parameters
-	notificated_users: List[int] = list()
+	notified_users: List[int] = list()
 	min_acceptable_signals_amount = 5
 
 	await manager.set_fiats_symbols()
@@ -42,9 +43,9 @@ async def server(wait_for: int):
 			logger.info(f"Active users amount: {len(active_users)}")
 
 			# Check if notified users turned off the bot
-			for user_id in notificated_users:
+			for user_id in notified_users:
 				if not user_id in [user.user_id for user in active_users]:
-					notificated_users.remove(user_id)
+					notified_users.remove(user_id)
 
 			for user in active_users:
 				user_id = user.user_id
@@ -73,9 +74,9 @@ async def server(wait_for: int):
 
 				# Notification about inefficient parametres
 				if len(total_sent_signals) < min_acceptable_signals_amount and \
-									not user_id in notificated_users:
+									not user_id in notified_users:
 					await manager.notificate_user(user_id)
-					notificated_users.append(user_id)
+					notified_users.append(user_id)
 
 				if total_sent_signals:
 					signals[user_id] = total_sent_signals

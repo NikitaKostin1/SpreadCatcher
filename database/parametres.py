@@ -1,7 +1,7 @@
 from config import logger, get_conn
 
 from entities.parametres import (
-	Banks, Fiat, Markets
+	Banks, Fiat, Markets, Currencies
 )
 
 
@@ -34,7 +34,6 @@ async def get_banks_by_fiat(fiat: Fiat) -> Banks:
 		logger.error(f"None banks fetched: {fiat=}")
 
 	return Banks(banks)
-
 
 
 @logger.catch
