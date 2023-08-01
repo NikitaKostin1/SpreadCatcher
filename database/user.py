@@ -271,9 +271,16 @@ async def get_active_users(connection: Connection) -> Tuple[User]:
 	try:
 		active_users = list()
 		records = await connection.fetch("""
-			SELECT * 
-			FROM users
-			WHERE is_bot_on = true;
+			SELECT 
+				DISTINCT users.*
+			FROM 
+				users_parametres AS params
+				JOIN users AS users 
+					ON params.user_id = users.user_id
+			WHERE 
+				users.is_bot_on = true
+			AND 
+				params.signals_type IN ('p2p');
 		""")
 
 		for record in records:
