@@ -193,6 +193,62 @@ async def reset_access(message: types.Message):
 
 
 @logger.catch
+async def mailing(message: types.Message):
+	try:
+		users_type = int(message["text"].split()[1])
+		mailing_text = "\n".join(message["text"].split("\n")[1:])
+	except:
+		# TODO: error message
+		await message.answer("Неверная команда")
+		return
+
+	if users_type not in (1, 2, 3):
+		# TODO: error message
+		await message.answer("""
+			Неверно указан тип людей. 
+			1 - тестеры и окончавшие тест,
+			2 - с активной подпиской,
+			3 - все
+		""")
+		return
+
+	all_users = await user_manager.get_users()
+	mailing_users = list()
+
+	for user in all_users:
+		match users_type:
+			case 1:
+				if user.is_test_active or \
+					await user_manager.is_tester_expired(user.user_id):
+					mailing_users.append(user)
+
+			case 2:
+				logger.info(2)
+				if user.is_subscription_active:
+					logger.info(user)
+					mailing_users.append(user)
+
+			case 3:
+				mailing_users.append(user)
+
+	await message.answer(
+		f"Идёт рыссылка со следующим текстом: \n{mailing_text}"
+	)
+
+	sent = 0
+	for user in mailing_users:
+		try:
+			await bot.send_message(user.user_id, mailing_text)
+			sent += 1
+		except:
+			continue
+
+	await message.answer(
+		f"Отправлено {sent} людям, {len(mailing_users) - sent} заблокировали бота."
+	)
+
+
+@logger.catch
 async def clear_signals(message: types.Message):
 	"""
 	Deletes all signal messages at every user
