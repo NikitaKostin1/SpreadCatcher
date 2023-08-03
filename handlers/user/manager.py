@@ -44,6 +44,23 @@ async def get_user(user_id: int) -> User:
 
 
 @logger.catch
+async def get_users() -> Tuple[User]:
+	"""
+	Retrieve the tuple of User objects from the users table.
+	Returns:
+		Tuple[User]
+	"""
+	try:
+		connection = await get_conn()
+		users: Tuple[User] = await db.get_users(connection)
+
+		return users
+	except Exception as e:
+		logger.error(f"{e}")
+		return None
+
+
+@logger.catch
 async def set_new_user(user: User) -> bool:
 	"""
 	Insert the user's data into the database.

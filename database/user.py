@@ -52,6 +52,40 @@ async def get_user(connection: Connection, user_id: int) -> User:
 
 
 @logger.catch
+async def get_users(connection: Connection) -> Tuple[User]:
+	"""
+	Retrieve the tuple of User objects from the users table.
+	Returns:
+		Tuple[User]
+	"""
+	try:
+		users = list()
+		records = await connection.fetch(f"""
+			SELECT * FROM users;
+		""")
+		if not records: return tuple()
+
+		for record in records:
+			user = User(
+				user_id=record.get("user_id"),
+				username=record.get("username"),
+				entry_date=record.get("entry_date"),
+				is_bot_on=record.get("is_bot_on"),
+				is_subscription_active=record.get("is_subscription_active"),
+				subscription_id=record.get("subscription_id"),
+				subscription_begin_date=record.get("subscription_begin_date"),
+				is_test_active=record.get("is_test_active"),
+				test_begin_date=record.get("test_begin_date")
+			)
+			users.append(user)
+
+		return tuple(users)
+	except Exception as e:
+		logger.error(f"{e}")
+		return None
+
+
+@logger.catch
 async def get_user_parametres(connection: Connection, user_id: int) -> Parametres:
 	"""
 	Returns a Parametres object from the users_parametres table.
