@@ -66,7 +66,7 @@ async def back_to_parametres(user_id_or_query: Union[int, types.CallbackQuery], 
 	
 
 @logger.catch
-async def save_parameter(user_id: int, new_param: Parameter):
+async def save_parameter(user_id: int, new_param: Parameter) -> bool:
 	"""
 	Save the parameters in the database for the user.
 	"""

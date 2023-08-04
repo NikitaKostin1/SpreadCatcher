@@ -149,7 +149,7 @@ async def currencies(callback: types.CallbackQuery):
 		await callback.answer(txt.error)
 		return
 
-	markup = ikb.parametres_currencies
+	markup = await ikb.get_parametres_currencies()
 	edited_markup = util.mark_markup_chosen_buttons(
 		dict(markup).copy(), currencies.value
 	)
@@ -185,7 +185,7 @@ async def markets(callback: types.CallbackQuery):
 		await callback.answer(txt.error)
 		return
 
-	markup = ikb.parametres_markets
+	markup = await ikb.get_parametres_markets()
 	edited_markup = util.mark_markup_chosen_buttons(
 		dict(markup).copy(), markets.value
 	)

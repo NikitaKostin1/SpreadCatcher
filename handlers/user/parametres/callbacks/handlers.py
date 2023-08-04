@@ -89,7 +89,6 @@ async def currencies(callback: types.CallbackQuery):
 	message_markup = message.reply_markup
 	chosen_currencies: list = util.get_markup_chosen_values(message_markup)
 
-
 	if button_value == "complete":
 		currencies = Currencies(chosen_currencies)
 
@@ -106,11 +105,10 @@ async def currencies(callback: types.CallbackQuery):
 	else:
 		chosen_currencies.append(currency)
 
-	markup = ikb.parametres_currencies
+	markup = await ikb.get_parametres_currencies()
 	edited_markup = util.mark_markup_chosen_buttons(
 		dict(markup).copy(), chosen_currencies
 	)
-
 
 	message_text = txt.currencies_info.format(currencies=" | ".join(chosen_currencies))
 	msg = await AdditionalMessage.edit(
@@ -156,7 +154,7 @@ async def markets(callback: types.CallbackQuery):
 	else:
 		chosen_markets.append(market)
 
-	markup = ikb.parametres_markets
+	markup = await ikb.get_parametres_markets()
 	edited_markup = util.mark_markup_chosen_buttons(
 		dict(markup).copy(), chosen_markets
 	)

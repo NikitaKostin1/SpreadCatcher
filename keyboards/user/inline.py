@@ -67,19 +67,30 @@ async def get_parametres_banks(fiat: Fiat) -> InlineKeyboardMarkup:
 	return parametres_banks
 
 
-parametres_currencies = InlineKeyboardMarkup(row_width=3)
-for currency in available_currencies:
-	currency_btn = InlineKeyboardButton(text=currency, callback_data=f"set_currency {currency}")
-	parametres_currencies.insert(currency_btn)
-complete_btn = InlineKeyboardButton(text="Готово ✅", callback_data=f"set_currency complete")
-parametres_currencies.add(complete_btn)
+async def get_parametres_currencies() -> InlineKeyboardMarkup:
+	currencies: Currencies = await db.p2p_currencies()
 
-parametres_markets = InlineKeyboardMarkup(row_width=3)
-for market in available_markets:
-	market_btn = InlineKeyboardButton(text=market, callback_data=f"set_market {market}")
-	parametres_markets.insert(market_btn)
-complete_btn = InlineKeyboardButton(text="Готово ✅", callback_data=f"set_market complete")
-parametres_markets.add(complete_btn)
+	parametres_currencies = InlineKeyboardMarkup(row_width=3)
+	for currency in currencies.value:
+		currency_btn = InlineKeyboardButton(text=currency, callback_data=f"set_currency {currency}")
+		parametres_currencies.insert(currency_btn)
+	complete_btn = InlineKeyboardButton(text="Готово ✅", callback_data=f"set_currency complete")
+	parametres_currencies.add(complete_btn)
+
+	return parametres_currencies
+
+
+async def get_parametres_markets() -> InlineKeyboardMarkup:
+	markets: Markets = await db.p2p_markets()
+
+	parametres_markets = InlineKeyboardMarkup(row_width=3)
+	for market in markets.value:
+		market_btn = InlineKeyboardButton(text=market, callback_data=f"set_market {market}")
+		parametres_markets.insert(market_btn)
+	complete_btn = InlineKeyboardButton(text="Готово ✅", callback_data=f"set_market complete")
+	parametres_markets.add(complete_btn)
+
+	return parametres_markets
 
 parametres_trading_type = InlineKeyboardMarkup(row_width=2)
 for bid_type in available_bid_types:
