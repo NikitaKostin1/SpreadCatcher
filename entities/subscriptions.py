@@ -59,7 +59,7 @@ class OneMonth(Subscription):
 
 	title: str = "1 месяц"
 	description: str = ""  # TODO: write and import description
-	price: float = 1299.00
+	price: float = 2499.00
 
 	is_full_access: bool = True
 	is_multiple_activations: bool = True
@@ -77,7 +77,24 @@ class ThreeMonths(Subscription):
 
 	title: str = "3 месяца"
 	description: str = ""  # TODO: write and import description
-	price: float = 2490.00
+	price: float = 4999.00
+	
+	is_full_access: bool = True
+	is_multiple_activations: bool = True
+
+
+@dataclass(frozen=True, order=True)
+class TwelveMonths(Subscription):
+	"""
+	Represents an twelve-months subscription with full access and multiple activations.
+	Inherits from the base `Subscription` class.
+	"""
+	subscription_id: int = 3
+	term: Union[timedelta, None] = timedelta(days=365)
+
+	title: str = "12 месяцев"
+	description: str = ""  # TODO: write and import description
+	price: float = 9999.00
 	
 	is_full_access: bool = True
 	is_multiple_activations: bool = True
@@ -90,12 +107,12 @@ class Unlimited(Subscription):
 	Represents an unlimited subscription with full access and one activation.
 	Inherits from the base `Subscription` class.
 	"""
-	subscription_id: int = 3
+	subscription_id: int = 4
 	term: Union[timedelta, None] = None
 
 	title: str = "Бессрочно"
 	description: str = ""  # TODO: write and import description
-	price: float = 9990.00
+	price: float = 19999.00
 	
 	is_full_access: bool = True
 	is_multiple_activations: bool = False
@@ -123,6 +140,7 @@ class Subscriptions:
 	tester: Subscription = Tester
 	one_month: Subscription = OneMonth
 	three_months: Subscription = ThreeMonths
+	twelve_months: Subscription = TwelveMonths
 	unlimited: Subscription = Unlimited
 
 

@@ -4,7 +4,10 @@ from typing import List
 
 from config import logger, get_conn
 from create_bot import bot
-from database import admin as db
+from database import (
+	admin as db,
+	user as user_db
+)
 
 from entities import User
 
@@ -76,9 +79,10 @@ async def set_tester_as_expired(user_id: int) -> bool:
 	"""
 	try:
 		connection = await get_conn()
-		success = await db.set_tester_as_expired(connection, user_id)
+		tester_expired = await db.set_tester_as_expired(connection, user_id)
+		bot_disabled = await user_db.disable_bot(connection, user_id)
 
-		return success
+		return tester_expired and bot_disabled
 	except Exception as e:
 		logger.error(f"{user_id}: {e}")
 		return False
@@ -102,13 +106,15 @@ async def get_users_with_non_tester_subscription() -> List[User]:
 @logger.catch
 async def set_subscription_as_expired(user_id: int) -> bool:
 	"""
-	Sets the subscription as expired for a user.
+	Sets the subscription as expired and
+	disables signals for a user.
 	"""
 	try:
 		connection = await get_conn()
-		success = await db.set_subscription_as_expired(connection, user_id)
+		subscription_expired = await db.set_subscription_as_expired(connection, user_id)
+		bot_disabled = await user_db.disable_bot(connection, user_id)
 
-		return success
+		return subscription_expired and bot_disabled
 	except Exception as e:
 		logger.error(f"{user_id}: {e}")
 		return False

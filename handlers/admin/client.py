@@ -55,7 +55,8 @@ async def give_access(message: types.Message):
 			0 - Тестер
 			1 - 1 месяц
 			2 - 3 месяца
-			3 - бессрочно
+			3 - 12 месяцев
+			4 - бессрочно
 		""")
 		return
 
