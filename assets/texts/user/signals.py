@@ -24,7 +24,7 @@ message = """ \
     Купить: {bid_price}<code>{fiat_symbol}</code>
     Продать: {ask_price}<code>{fiat_symbol}</code>
     📈 Спред: <b>{spread}%</b>
-______________________________________
+_________________________
 
     ▶️ <b>Покупка</b> ▶️
     Лимиты: {bid_limits_min}{fiat_symbol} - {bid_limits_max}{fiat_symbol}

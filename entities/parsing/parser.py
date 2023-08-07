@@ -30,7 +30,6 @@ class Parser:
 			self.limits = ""
 
 		self.headers = self.get_headers()
-	
 
 
 	@logger.catch
@@ -137,8 +136,6 @@ class Parser:
 
 		else:
 			advertisements["best_adv"] = advertisement
-
-
 
 
 	@logger.catch

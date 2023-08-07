@@ -117,7 +117,7 @@ class BybitParser(Parser):
 		if bank not in BybitParser.banks_alias:
 			return
 
-		# For some reason works only with this headers
+		# For some reason works only with these headers
 		headers = {
 			"Content-type": "application/json", 
 			"Accept": "application/json"
@@ -138,11 +138,8 @@ class BybitParser(Parser):
 			try:
 				response = json.loads(await client_response.text())
 				if response["result"]["count"] == 0:
-					# logger.warning(f"Bybit {adv_type} 0 adverstisments: {self.currency=}, {self.fiat=}, {bank=}, {self.limits=}")
 					return
 			except Exception as e:
-				# logger.error(f"Huobi parser: {e}")
-				logger.error(await client_response.text())
 				return
 
 		self._adv_validation(response["result"]["items"], adv_type, bank)
