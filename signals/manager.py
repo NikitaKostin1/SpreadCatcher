@@ -15,14 +15,16 @@ from keyboards.user import (
 	inline as ikb
 )
 
-from typing import NoReturn, Union, Tuple
+from typing import (
+	NoReturn, Union, Tuple
+)
 from entities.parsing.types import (
 	ParserResponse, Advertisement
 )
 from entities import (
 	Parser, Signal,
 	BinanceParser, HuobiParser,
-	BybitParser, OkxParser, PexpayParser,
+	BybitParser, OkxParser, BitpapaParser,
 	Parametres
 )
 
@@ -70,7 +72,7 @@ async def gather_parsers_responses(
 		"Huobi": HuobiParser,
 		"Bybit": BybitParser, 
 		"OKX": OkxParser,
-		"PexPay": PexpayParser
+		"bitpapa": BitpapaParser
 	}
 	parsers_responses = list()
 
