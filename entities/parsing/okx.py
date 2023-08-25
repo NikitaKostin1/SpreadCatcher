@@ -140,7 +140,7 @@ class OkxParser(Parser):
 		base = "https://www.okx.com/v3/c2c/tradingOrders/getMarketplaceAdsPrelogin"
 		parametres = {
 			"t": int(datetime.now().timestamp()),
-			"side": adv_type_alias[adv_type],
+			"side": url_format[adv_type],
 			"paymentMethod": OkxParser.banks_alias[bank],
 			"userType": "all",
 			"hideOverseasVerificationAds": "false",
