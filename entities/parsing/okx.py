@@ -119,7 +119,6 @@ class OkxParser(Parser):
 			return None
 
 
-
 	@logger.catch
 	async def _get_advertisements(self, adv_type: Union["bid", "ask"], bank: str, session: ClientSession) -> NoReturn:
 		"""
@@ -132,25 +131,40 @@ class OkxParser(Parser):
 			"bid": "sell",
 			"ask": "buy"
 		}
+		sort_alias = {
+			"bid": "price_inc",
+			"ask": "price_desc"
+		}
 
-		url = f"https://www.okx.com/v3/c2c/tradingOrders/books?" + \
-		f"t=1659359072271&quoteCurrency={self.fiat}&" + \
-		f"baseCurrency={self.currency}&" + \
-		f"side={url_format[adv_type]}&" + \
-		f"paymentMethod={OkxParser.banks_alias[bank]}&" +\
-		"userType=all&showTrade=false&showFollow=false&" + \
-		"showAlreadyTraded=false&isAbleFilter=false&" + \
-		f"quoteMinAmountPerOrder={self.limits}" 
+		base = "https://www.okx.com/v3/c2c/tradingOrders/getMarketplaceAdsPrelogin"
+		parametres = {
+			"t": int(datetime.now().timestamp()),
+			"side": adv_type_alias[adv_type],
+			"paymentMethod": OkxParser.banks_alias[bank],
+			"userType": "all",
+			"hideOverseasVerificationAds": "false",
+			"sortType": sort_alias[adv_type],
+			"limit": "20",
+			"cryptoCurrency": self.currency.lower(),
+			"fiatCurrency": self.fiat.lower(),
+			"currentPage": "1",
+			"numberPerPage": "20"
+		}
+
+		url_params = urllib.parse.urlencode(parametres)
+		url = str(base) + "?" + str(url_params)
 
 
-		async with session.get(url, headers=self.get_headers()) as client_response:
-			try:
+		try:
+			async with session.get(
+				url, headers=self.get_headers(), ssl=False
+			) as client_response:
+				if client_response.status != 200: return
 				response = json.loads(await client_response.text())
 				if not response["data"][url_format[adv_type]]:
-					# logger.warning(f"OKX {adv_type} 0 adverstisments: {self.currency=}, {self.fiat=}, {bank=}, {self.limits=}")
 					return
-			except Exception as e:
-				# logger.error(f"OKX parser (most likely Cloudflare): {e}")
-				return
+
+		except ClientConnectorError:
+			return
 
 		self._adv_validation(response["data"][url_format[adv_type]], adv_type, bank)

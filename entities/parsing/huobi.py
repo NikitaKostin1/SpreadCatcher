@@ -81,7 +81,6 @@ class HuobiParser(Parser):
 		"""
 		Perform validation on each advertisement in the response and return conditions and advertiser data if valid.
 		"""
-
 		for advertisement_ndx in range(len(response["data"])):
 			advertisement = response["data"][advertisement_ndx]
 
@@ -147,13 +146,25 @@ class HuobiParser(Parser):
 			"ask": "buy"
 		}
 
-		url = "https://www.huobi.com/-/x/otc/v1/data/trade-market?" + \
-		f"coinId={HuobiParser.currencies_alias[self.currency]}" + \
-		f"&currency={HuobiParser.fiats_alias[self.fiat]}" +\
-		f"&tradeType={url_format[adv_type]}&currPage=1" + \
-		f"&payMethod={HuobiParser.banks_alias[bank]}&acceptOrder=-1" + \
-		f"&country=&blockType=general&online=1&range=0" + \
-		f"&amount={self.limits}&onlyTradable=false&isFollowed=false"
+		base = "https://www.huobi.com/-/x/otc/v1/data/trade-market"
+		parametres = {
+			"coinId": HuobiParser.currencies_alias[self.currency],
+			"currency": HuobiParser.fiats_alias[self.fiat],
+			"tradeType": url_format[adv_type],
+			"currPage": "1",
+			"payMethod": HuobiParser.banks_alias[bank],
+			"acceptOrder": "-1",
+			"country": "",
+			"blockType": "general",
+			"online": "1",
+			"range": "0",
+			"amount": self.limits,
+			"onlyTradable": "false",
+			"isFollowed": "false"
+		}
+		url_params = urllib.parse.urlencode(parametres)
+		url = str(base) + "?" + str(url_params)
+
 
 		async with session.get(url, headers=self.get_headers()) as client_response:
 			try:

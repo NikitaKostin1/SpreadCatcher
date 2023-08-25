@@ -126,8 +126,6 @@ class BinanceParser(Parser):
 			return None
 
 
-
-
 	@logger.catch
 	async def _get_advertisements(self, adv_type: Union["bid", "ask"], bank: str, session: ClientSession) -> NoReturn:
 		"""
@@ -165,7 +163,6 @@ class BinanceParser(Parser):
 			response = json.loads(str(await client_response.text()))
 
 			if not response["data"]:
-				# logger.warning(f"Binance {adv_type} 0 adverstisments: {self.currency=}, {self.fiat=}, {bank=}, {self.limits=}")
 				return
 
 		if not response["success"]:

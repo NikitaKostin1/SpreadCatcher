@@ -34,7 +34,7 @@ class BybitParser(Parser):
 		"Sepa_Transfer": "118",
 		"Sepa_Instant": "303",
 		"Halyk": "203",
-		"HomeCreditKz": "263",
+		"HomeCreditKz": "262",
 		"Eurasian": "262",
 		"Jysan": "149",
 		"Kaspi": "150",
@@ -49,7 +49,21 @@ class BybitParser(Parser):
 		"Garanti": "100",
 		"KuveytTurk": "151",
 		"Papara": "114",
-		"QNB": "308"
+		"QNB": "308",
+		"Akbank": "532",
+		"Alfa-bank": "379",
+		"PayPal": "54",
+		"SBP": "382",
+		"Sberbank": "377",
+		"Skrill": "162",
+		"DenizBank": "535",
+		"AirTM": "7",
+		"MTBank": "332",
+		"PerfectMoney": "56",
+		"VakifBank": "412",
+		"Izibank": "544",
+		"ISBank": "414",
+		"Technobank": "336"
 	}
 
 	@logger.catch
@@ -114,7 +128,7 @@ class BybitParser(Parser):
 		"""
 		Fetch advertisements for the given advertisement type and bank using the Bybit API.
 		"""
-		if bank not in BybitParser.banks_alias:
+		if BybitParser.banks_alias.get(bank):
 			return
 
 		# For some reason works only with these headers
@@ -128,19 +142,29 @@ class BybitParser(Parser):
 			"ask": "0"
 		}
 
-		url = f"https://api2.bybit.com/spot/api/otc/item/list/?" + \
-		f"userId=&tokenId={self.currency}&currencyId={self.fiat}" + \
-		f"&payment={BybitParser.banks_alias[bank]}&side={url_format[adv_type]}" + \
-		f"&size=10&page=1&amount={self.limits}"
-		
+		base = "https://api2.bybit.com/spot/api/otc/item/list"
+		parametres = {
+			"userId": "",
+			"tokenId": self.currency,
+			"currencyId": self.fiat,
+			"payment": BybitParser.banks_alias[bank],
+			"side": url_format[adv_type],
+			"size": "10",
+			"page": "1",
+			"amount": self.limits
+		}
 
-		async with session.get(url, headers=headers) as client_response:
-			try:
+		url_params = urllib.parse.urlencode(parametres)
+		url = str(base) + "?" + str(url_params)
+
+		try:
+			async with session.get(url, headers=headers) as client_response:
+				if client_response.status != 200: return
 				response = json.loads(await client_response.text())
 				if response["result"]["count"] == 0:
 					return
-			except Exception as e:
-				return
+		except Exception as e:
+			logger.error(e)
 
 		self._adv_validation(response["result"]["items"], adv_type, bank)
 
