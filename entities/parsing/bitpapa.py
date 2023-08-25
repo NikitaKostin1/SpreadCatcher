@@ -93,15 +93,12 @@ class BitpapaParser(Parser):
 				if not self.price_difference_validation(
 							advertisement_ndx, adv_type,
 							price, next_price, total_adv_amount):
-					logger.warning(advertisement["user"]["user_name"])
 					continue
 
 			# Check advertiser validation
 			if not self.advertiser_validation(
 						advertiser_advertisements_amount,
 						advertiser_finish_rate):
-
-				logger.warning(f"{advertiser_advertisements_amount} ads, {advertiser_finish_rate}%: {advertisement['user']['user_name']}")
 				continue
 
 			conditions = AdvСonditions(
@@ -174,7 +171,6 @@ class BitpapaParser(Parser):
 
 		url_params = urllib.parse.urlencode(parametres)
 		url = str(base) + "?" + str(url_params)
-		logger.info(url)
 
 		async with session.get(url, headers=self.headers) as client_response:
 			if client_response.status != 200: return
