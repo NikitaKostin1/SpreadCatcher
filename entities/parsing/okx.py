@@ -8,6 +8,7 @@ from .parser import (
 	Advertiser, AdvСonditions
 ) 
 
+from datetime import datetime
 from aiohttp.client import ClientSession
 from typing import (
 	NoReturn, Union, Tuple
