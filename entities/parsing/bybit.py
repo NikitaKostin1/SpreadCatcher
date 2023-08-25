@@ -2,6 +2,7 @@ from config import logger
 import json
 import asyncio
 import aiohttp
+import urllib
 
 from .parser import (
 	Parser, ParserResponse, Advertisement,
