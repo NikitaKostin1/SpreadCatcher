@@ -300,14 +300,14 @@ async def generate_markup(
 		"Huobi": f"https://c2c.huobi.com/ru-ru/trader/{advertiser_id_bid}",
 		"Bybit": f"https://www.bybit.com/fiat/trade/otc/?actionType=1&token={ask.conditions.currency}&fiat={ask.conditions.fiat}",
 		"OKX": f"https://www.okx.com/ru/p2p/ads-merchant?publicUserId={advertiser_id_bid}",
-		"PexPay": f"https://www.pexpay.com/en/advertiserDetail?advertiserNo={advertiser_id_bid}"
+		"bitpapa": f"https://bitpapa.com/user/{advertiser_id_bid}"
 	}
 	ask_urls = {
 		"Binance": f"https://p2p.binance.com/en/advertiserDetail?advertiserNo={advertiser_id_ask}",
 		"Huobi": f"https://c2c.huobi.com/ru-ru/trader/{advertiser_id_ask}",
 		"Bybit": f"https://www.bybit.com/fiat/trade/otc/?actionType=0&token={ask.conditions.currency}&fiat={ask.conditions.fiat}",
 		"OKX": f"https://www.okx.com/ru/p2p/ads-merchant?publicUserId={advertiser_id_ask}",
-		"PexPay": f"https://www.pexpay.com/en/advertiserDetail?advertiserNo={advertiser_id_ask}"
+		"bitpapa": f"https://bitpapa.com/user/{advertiser_id_ask}"
 	}
 
 	try:
